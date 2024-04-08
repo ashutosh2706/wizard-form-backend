@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using WizardFormBackend.DTOs;
 using WizardFormBackend.Services;
@@ -23,17 +24,19 @@ namespace WizardFormBackend.Controllers
         }
 
         [HttpPost]
+        [Authorize(Roles = "admin")]
         public async Task<IActionResult> AddRole(RoleDTO roleDTO)
         {
             RoleDTO role = await _roleService.AddRoleAsync(roleDTO);
             return Created("/Roles", role);
         }
 
-        [HttpDelete("roleId")]
-        public async Task<IActionResult> DeleteRole(int roleId)
+        [HttpDelete("{RoleId}")]
+        [Authorize(Roles = "admin")]
+        public async Task<IActionResult> DeleteRole(int RoleId)
         {
-            await _roleService.DeleteRoleAsync(roleId);
-            return Ok();
+            await _roleService.DeleteRoleAsync(RoleId);
+            return NoContent();
         }
     }
 }

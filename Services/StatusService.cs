@@ -8,19 +8,31 @@ namespace WizardFormBackend.Services
     {
         private readonly IStatusRepository _statusRepository = statusRepository;
 
-        public async Task<IEnumerable<Status>> GetStatusesAsync()
+        public async Task<IEnumerable<StatusDTO>> GetStatusesAsync()
         {
-            return await _statusRepository.GetAllStatusAsync();
+            IEnumerable<Status> statuses = await _statusRepository.GetAllStatusAsync();
+            List<StatusDTO> statusDTOs = new List<StatusDTO>();
+            foreach (Status status in statuses)
+            {
+                statusDTOs.Add(new StatusDTO
+                {
+                    StatusCode = status.StatusCode,
+                    Description = status.Description
+                });
+            }
+            return statusDTOs;
         }
 
-        public async Task<Status> AddStatusAsync(StatusDTO statusDTO)
+        public async Task<StatusDTO> AddStatusAsync(StatusDTO statusDTO)
         {
             Status status = new()
             {
+                StatusCode = statusDTO.StatusCode,
                 Description = statusDTO.Description,
             };
 
-            return await _statusRepository.AddStatusAsync(status);
+            Status newStatus = await _statusRepository.AddStatusAsync(status);
+            return new StatusDTO { StatusCode = newStatus.StatusCode, Description = newStatus.Description };
         }
 
         public async Task DeleteStatusAsync(int statusCode)

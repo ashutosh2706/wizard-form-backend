@@ -9,11 +9,11 @@ public partial class Request
 
     public long UserId { get; set; }
 
-    public string Title { get; set; } = null!;
-
     public string GuardianName { get; set; } = null!;
 
     public string? Phone { get; set; }
+
+    public string Title { get; set; } = null!;
 
     public DateOnly RequestDate { get; set; }
 

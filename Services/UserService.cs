@@ -5,9 +5,11 @@ using WizardFormBackend.Utils;
 
 namespace WizardFormBackend.Services
 {
-    public class UserService(IUserRepository userRepository) : IUserService
+    public class UserService(IUserRepository userRepository, IRoleService roleService, IConfiguration configuration) : IUserService
     {
         private readonly IUserRepository _userRepository = userRepository;
+        private readonly IConfiguration _configuration = configuration;
+        private readonly IRoleService _roleService = roleService;
 
         public async Task<User> AddUserAsync(UserDTO userDTO)
         {
@@ -36,7 +38,7 @@ namespace WizardFormBackend.Services
                     FirstName = user.FirstName,
                     LastName = user.LastName,
                     Email = user.Email,
-                    Active = user.Active ? "Allowed" : "Restricted"
+                    IsAllowed = user.Active ? "Allowed" : "Restricted"
                 };
                 result.Add(userDTO);
             }
@@ -58,12 +60,12 @@ namespace WizardFormBackend.Services
             }
         }
 
-        public async Task AllowUser(long userId, bool allowed)
+        public async Task AllowUserAsync(long userId)
         {
             User? user = await _userRepository.GetUserByUserIdAsync(userId);
             if (user != null)
             {
-                user.Active = allowed;
+                user.Active = !user.Active;
                 await _userRepository.UpdateUserAsync(user);
             }
         }
@@ -78,9 +80,32 @@ namespace WizardFormBackend.Services
             }
         }
 
-        public async Task<User?> GetUserByEmailAsync(string email)
+        public async Task<string> AuthenticateUserAsync(LoginDTO loginDTO)
         {
-            return await _userRepository.GetUserByEmailAsync(email);
+            string password = Util.GenerateHash(loginDTO.Password);
+            User? existingUser = await _userRepository.GetUserByEmailAsync(loginDTO.Email);
+            if (existingUser != null && existingUser.Password == password && existingUser.Active)
+            {
+                string roleType = await _roleService.GetRoleTypeAsync(existingUser.RoleId);
+                if (roleType != string.Empty)
+                {
+                    return new AuthProvider(_configuration).GetToken(existingUser, roleType);
+                }
+            }
+
+            return string.Empty;
         }
+
+        public async Task<string> GetRoleTypeAsync(string email)
+        {
+            User? existingUser = await _userRepository.GetUserByEmailAsync(email);
+            if(existingUser != null)
+            {
+                return await _roleService.GetRoleTypeAsync(existingUser.RoleId);
+            }
+
+            return string.Empty;
+        }
+
     }
 }

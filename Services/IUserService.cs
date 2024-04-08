@@ -6,10 +6,11 @@ namespace WizardFormBackend.Services
     public interface IUserService
     {
         Task<User> AddUserAsync(UserDTO userDTO);
-        Task AllowUser(long userId, bool allowed);
+        Task AllowUserAsync(long userId);
         Task DeleteUserAsync(long userId);
-        Task<User?> GetUserByEmailAsync(string email);
         Task<IEnumerable<UserResponseDTO>> GetUsersAsync();
         Task UpdateUserAsync(UserDTO userDTO);
+        Task<string> AuthenticateUserAsync(LoginDTO loginDTO);
+        Task<string> GetRoleTypeAsync(string email);
     }
 }

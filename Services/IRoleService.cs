@@ -7,6 +7,7 @@ namespace WizardFormBackend.Services
     {
         Task<RoleDTO> AddRoleAsync(RoleDTO roleDTO);
         Task DeleteRoleAsync(int roleId);
+        Task<string> GetRoleTypeAsync(int roleId);
         Task<IEnumerable<RoleDTO>> GetRolesAsync();
     }
 }

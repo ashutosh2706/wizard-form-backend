@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using WizardFormBackend.Models;
 
 namespace WizardFormBackend.Data;
@@ -41,18 +39,17 @@ public partial class WizardFormDbContext : DbContext
     {
         modelBuilder.Entity<FileDetail>(entity =>
         {
-            entity.HasKey(e => e.FileId).HasName("PK__FileDeta__6F0F98BF0A423A5E");
+            entity.HasKey(e => e.FileId).HasName("PK__FileDeta__6F0F98BF3B972CA5");
 
             entity.Property(e => e.FileId).ValueGeneratedNever();
             entity.Property(e => e.Checksum)
-                .HasMaxLength(64)
+                .HasMaxLength(255)
                 .IsUnicode(false);
-            entity.Property(e => e.FileName).HasMaxLength(255);
         });
 
         modelBuilder.Entity<Priority>(entity =>
         {
-            entity.HasKey(e => e.PriorityCode).HasName("PK__Priority__3E2A44753668D9A9");
+            entity.HasKey(e => e.PriorityCode).HasName("PK__Priority__3E2A4475CAFE752F");
 
             entity.ToTable("Priority");
 
@@ -64,16 +61,16 @@ public partial class WizardFormDbContext : DbContext
 
         modelBuilder.Entity<Request>(entity =>
         {
-            entity.HasKey(e => e.RequestId).HasName("PK__Requests__33A8517AEB6D6784");
+            entity.HasKey(e => e.RequestId).HasName("PK__Requests__33A8517AB89B2FA9");
 
             entity.Property(e => e.GuardianName)
-                .HasMaxLength(30)
+                .HasMaxLength(50)
                 .IsUnicode(false);
             entity.Property(e => e.Phone)
                 .HasMaxLength(15)
                 .IsUnicode(false);
             entity.Property(e => e.Title)
-                .HasMaxLength(30)
+                .HasMaxLength(50)
                 .IsUnicode(false);
 
             entity.HasOne(d => d.File).WithMany(p => p.Requests)
@@ -98,7 +95,7 @@ public partial class WizardFormDbContext : DbContext
 
         modelBuilder.Entity<Role>(entity =>
         {
-            entity.HasKey(e => e.RoleId).HasName("PK__Roles__8AFACE1A877A53C3");
+            entity.HasKey(e => e.RoleId).HasName("PK__Roles__8AFACE1A41F0EDCF");
 
             entity.Property(e => e.RoleId).ValueGeneratedNever();
             entity.Property(e => e.RoleType)
@@ -108,7 +105,7 @@ public partial class WizardFormDbContext : DbContext
 
         modelBuilder.Entity<Status>(entity =>
         {
-            entity.HasKey(e => e.StatusCode).HasName("PK__Status__6A7B44FDE404EF15");
+            entity.HasKey(e => e.StatusCode).HasName("PK__Status__6A7B44FD2E7A92CE");
 
             entity.ToTable("Status");
 
@@ -120,10 +117,10 @@ public partial class WizardFormDbContext : DbContext
 
         modelBuilder.Entity<User>(entity =>
         {
-            entity.HasKey(e => e.UserId).HasName("PK__Users__1788CC4C6B634065");
+            entity.HasKey(e => e.UserId).HasName("PK__Users__1788CC4CE13CF369");
 
             entity.Property(e => e.Email)
-                .HasMaxLength(20)
+                .HasMaxLength(50)
                 .IsUnicode(false);
             entity.Property(e => e.FirstName)
                 .HasMaxLength(20)
@@ -131,14 +128,11 @@ public partial class WizardFormDbContext : DbContext
             entity.Property(e => e.LastName)
                 .HasMaxLength(20)
                 .IsUnicode(false);
-            entity.Property(e => e.Password)
-                .HasMaxLength(50)
-                .IsUnicode(false);
 
             entity.HasOne(d => d.Role).WithMany(p => p.Users)
                 .HasForeignKey(d => d.RoleId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK__Users__RoleId__4BAC3F29");
+                .HasConstraintName("FK__Users__RoleId__5165187F");
         });
 
         OnModelCreatingPartial(modelBuilder);

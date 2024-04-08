@@ -1,5 +1,9 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using WizardFormBackend.DTOs;
+using WizardFormBackend.Models;
+using WizardFormBackend.Services;
 
 namespace WizardFormBackend.Controllers
 {
@@ -7,7 +11,50 @@ namespace WizardFormBackend.Controllers
     [ApiController]
     public class UsersController : ControllerBase
     {
-        public UsersController() {}
+        private readonly IUserService _userService;
+        public UsersController(IUserService userService) 
+        {
+            _userService = userService;
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> GetUsers()
+        {
+            IEnumerable<UserResponseDTO> responseDTOs = await _userService.GetUsersAsync();
+            return Ok(responseDTOs);
+        }
+
+
+        [HttpPost("login")]
+        public async Task<IActionResult> Login(LoginDTO loginDTO)
+        {
+            string token = await _userService.AuthenticateUserAsync(loginDTO);
+            string role = await _userService.GetRoleTypeAsync(loginDTO.Email);
+            return token != string.Empty ? Ok(new {role, token}) : BadRequest();
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> AddUser(UserDTO userDTO)
+        {
+            User newUser = await _userService.AddUserAsync(userDTO);
+            return Created("/Users", newUser);
+        }
+
+        [HttpPut("allow/{UserId}")]
+        [Authorize(Roles = "admin")]
+        public async Task<IActionResult> AllowUser(long UserId)
+        {
+            await _userService.AllowUserAsync(UserId);
+            return Ok();
+        }
+
+        [HttpDelete("{UserId}")]
+        [Authorize(Roles = "admin")]
+        public async Task<IActionResult> DeleteUser(long UserId)
+        {
+            await _userService.DeleteUserAsync(UserId);
+            return NoContent();
+        }
 
     }
 }

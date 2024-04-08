@@ -4,10 +4,11 @@
     {
         public long RequestId { get; set; }
         public long UserId { get; set; }
-        public required string Title { get; set; }
-        public required string GuardianName { get; set; }
+        public string Title { get; set; } = string.Empty;
+        public string GuardianName { get; set; } = string.Empty;
         public required DateOnly RequestDate { get; set; }
-        public required string Priority { get; set; }
+        public int PriorityCode { get; set; }
+        public int StatusCode { get; set; }
         public string Phone { get; set; } = string.Empty;
     }
 }

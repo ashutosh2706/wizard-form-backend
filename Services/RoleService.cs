@@ -31,6 +31,16 @@ namespace WizardFormBackend.Services
             return new RoleDTO { RoleId = newRole.RoleId, RoleType = newRole.RoleType };
         }
 
+        public async Task<string> GetRoleTypeAsync(int roleId)
+        {
+            Role? role = await _roleRepository.GetRoleByRoleIdAsync(roleId);
+            if(role != null)
+            {
+                return role.RoleType;
+            }
+            return string.Empty;
+        }
+
         public async Task DeleteRoleAsync(int roleId)
         {
             Role? existingRole = await _roleRepository.GetRoleByRoleIdAsync(roleId);
