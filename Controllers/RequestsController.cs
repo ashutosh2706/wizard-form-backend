@@ -24,15 +24,21 @@ namespace WizardFormBackend.Controllers
             return Ok(requestDTOs);
         }
 
-        [HttpGet("{UserId}")]
+        [HttpGet("user/{UserId}")]
         public async Task<IActionResult> GetAllRequestByUser(long UserId)
         {
             IEnumerable<RequestDTO> requestDTOs = await _requestService.GetAllRequestByUserIdAsync(UserId);
             return Ok(requestDTOs);
         }
 
+        [HttpGet("{RequestId}")]
+        public async Task<IActionResult> GetRequestByRerquestId(long RequestId)
+        {
+            RequestDTO? requestDTO = await _requestService.GetRequestByRequestIdAsync(RequestId);
+            return requestDTO != null ? Ok(requestDTO) : NotFound();
+        }
+
         [HttpPost]
-        [Authorize(Roles = "user")]
         public async Task<IActionResult> AddRequest(RequestDTO requestDTO)
         {
             RequestDTO response = await _requestService.AddRequestAsync(requestDTO);
@@ -47,7 +53,7 @@ namespace WizardFormBackend.Controllers
             return Ok();
         }
 
-        [HttpDelete("{RequestId}")]
+        [HttpDelete("delete/{RequestId}")]
         [Authorize(Roles = "admin")]
         public async Task<IActionResult> DeleteRequest(long RequestId)
         {

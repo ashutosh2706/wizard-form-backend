@@ -9,5 +9,6 @@ namespace WizardFormBackend.Services
         Task<IEnumerable<RequestDTO>> GetAllRequestAsync();
         Task<IEnumerable<RequestDTO>> GetAllRequestByUserIdAsync(long userId);
         Task UpdateRequestStatusAsync(long requestId, int statusCode);
+        Task<RequestDTO?> GetRequestByRequestIdAsync(long requestId);
     }
 }

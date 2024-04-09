@@ -24,7 +24,6 @@ namespace WizardFormBackend.Controllers
         }
 
         [HttpPost]
-        [Authorize(Roles = "admin")]
         public async Task<IActionResult> AddRole(RoleDTO roleDTO)
         {
             RoleDTO role = await _roleService.AddRoleAsync(roleDTO);

@@ -16,7 +16,9 @@ namespace WizardFormBackend.Utils
             {
                 new Claim("UserId", user.UserId.ToString()),
                 new Claim("Email", user.Email),
-                new Claim("Password", user.Password),
+                new Claim("FirstName", user.FirstName),
+                new Claim("LastName", user.LastName),
+                new Claim("RoleType", RoleType),
                 new Claim(ClaimTypes.Role, RoleType)
             };
 

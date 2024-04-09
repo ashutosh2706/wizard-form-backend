@@ -10,7 +10,6 @@ namespace WizardFormBackend.Services
         Task DeleteUserAsync(long userId);
         Task<IEnumerable<UserResponseDTO>> GetUsersAsync();
         Task UpdateUserAsync(UserDTO userDTO);
-        Task<string> AuthenticateUserAsync(LoginDTO loginDTO);
-        Task<string> GetRoleTypeAsync(string email);
+        Task<string?> AuthenticateUserAsync(LoginDTO loginDTO);
     }
 }

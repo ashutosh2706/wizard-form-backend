@@ -18,6 +18,7 @@ namespace WizardFormBackend.Controllers
         }
 
         [HttpGet]
+        [Authorize(Roles = "admin")]
         public async Task<IActionResult> GetUsers()
         {
             IEnumerable<UserResponseDTO> responseDTOs = await _userService.GetUsersAsync();
@@ -28,9 +29,9 @@ namespace WizardFormBackend.Controllers
         [HttpPost("login")]
         public async Task<IActionResult> Login(LoginDTO loginDTO)
         {
-            string token = await _userService.AuthenticateUserAsync(loginDTO);
-            string role = await _userService.GetRoleTypeAsync(loginDTO.Email);
-            return token != string.Empty ? Ok(new {role, token}) : BadRequest();
+            string? token = await _userService.AuthenticateUserAsync(loginDTO);
+            return token != null ? Ok(token) : BadRequest();
+            
         }
 
         [HttpPost]

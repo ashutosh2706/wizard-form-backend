@@ -38,7 +38,7 @@ namespace WizardFormBackend.Services
                     FirstName = user.FirstName,
                     LastName = user.LastName,
                     Email = user.Email,
-                    IsAllowed = user.Active ? "Allowed" : "Restricted"
+                    IsAllowed = user.Active ? "allowed" : "restricted"
                 };
                 result.Add(userDTO);
             }
@@ -80,31 +80,17 @@ namespace WizardFormBackend.Services
             }
         }
 
-        public async Task<string> AuthenticateUserAsync(LoginDTO loginDTO)
+        public async Task<string?> AuthenticateUserAsync(LoginDTO loginDTO)
         {
             string password = Util.GenerateHash(loginDTO.Password);
             User? existingUser = await _userRepository.GetUserByEmailAsync(loginDTO.Email);
             if (existingUser != null && existingUser.Password == password && existingUser.Active)
             {
                 string roleType = await _roleService.GetRoleTypeAsync(existingUser.RoleId);
-                if (roleType != string.Empty)
-                {
-                    return new AuthProvider(_configuration).GetToken(existingUser, roleType);
-                }
+                return new AuthProvider(_configuration).GetToken(existingUser, roleType);
+                
             }
-
-            return string.Empty;
-        }
-
-        public async Task<string> GetRoleTypeAsync(string email)
-        {
-            User? existingUser = await _userRepository.GetUserByEmailAsync(email);
-            if(existingUser != null)
-            {
-                return await _roleService.GetRoleTypeAsync(existingUser.RoleId);
-            }
-
-            return string.Empty;
+            return null;
         }
 
     }

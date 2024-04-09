@@ -24,7 +24,6 @@ namespace WizardFormBackend.Controllers
         }
 
         [HttpPost]
-        [Authorize(Roles = "admin")]
         public async Task<IActionResult> AddPriority(PriorityDTO priorityDTO)
         {
             PriorityDTO responseDTO = await _priorityService.AddPriorityAsync(priorityDTO);

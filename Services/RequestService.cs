@@ -52,7 +52,7 @@ namespace WizardFormBackend.Services
             Request? existingRequest = await _requestRepository.GetRequestByRequestIdAsync(requestId);
             if (existingRequest != null)
             {
-                existingRequest.StatusCode = statusCode;    // ==> 2: approved 3:rejected
+                existingRequest.StatusCode = statusCode;    // => 2: approved 3:rejected
                 await _requestRepository.UpdateRequestAsync(existingRequest);
             }
         }
@@ -75,6 +75,27 @@ namespace WizardFormBackend.Services
                 });
             }
             return result;
+        }
+
+        public async Task<RequestDTO?> GetRequestByRequestIdAsync(long requestId)
+        {
+            Request? request = await _requestRepository.GetRequestByRequestIdAsync(requestId);
+            if(request != null)
+            {
+                return new RequestDTO()
+                {
+                    RequestId = request.RequestId,
+                    UserId = request.UserId,
+                    Title = request.Title,
+                    RequestDate = request.RequestDate,
+                    PriorityCode = request.PriorityCode,
+                    StatusCode = request.StatusCode,
+                    GuardianName = request.GuardianName,
+                    Phone = request.Phone ?? ""
+                };
+            }
+
+            return null;
         }
 
         public async Task DeleteRequestAsync(long requestId)
