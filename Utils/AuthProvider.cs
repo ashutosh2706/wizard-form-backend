@@ -25,7 +25,7 @@ namespace WizardFormBackend.Utils
             var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["JWT:Key"]));
             var signIn = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
             var token = new JwtSecurityToken(
-                _configuration["JWT:Issuer"], _configuration["JWT:Audience"], claims, expires: DateTime.UtcNow.AddDays(7), signingCredentials: signIn
+                _configuration["JWT:Issuer"], _configuration["JWT:Audience"], claims, expires: DateTime.UtcNow.AddDays(8), signingCredentials: signIn
             );
             return new JwtSecurityTokenHandler().WriteToken(token);
         }

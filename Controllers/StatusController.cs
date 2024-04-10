@@ -24,6 +24,7 @@ namespace WizardFormBackend.Controllers
         }
 
         [HttpPost]
+        [Authorize(Roles = "admin")]
         public async Task<IActionResult> AddStatus(StatusDTO statusDTO)
         {
             StatusDTO response = await _statusService.AddStatusAsync(statusDTO);
