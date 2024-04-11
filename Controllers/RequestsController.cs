@@ -1,5 +1,4 @@
 ﻿using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using WizardFormBackend.DTOs;
 using WizardFormBackend.Services;
@@ -39,7 +38,7 @@ namespace WizardFormBackend.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> AddRequest(RequestDTO requestDTO)
+        public async Task<IActionResult> AddRequest([FromForm] RequestDTO requestDTO)
         {
             RequestDTO response = await _requestService.AddRequestAsync(requestDTO);
             return Created("/Requests", response);

@@ -15,9 +15,9 @@ public partial class User
 
     public string Password { get; set; } = null!;
 
-    public bool Active { get; set; }
-
     public int RoleId { get; set; }
+
+    public bool Active { get; set; }
 
     public virtual ICollection<Request> Requests { get; set; } = new List<Request>();
 

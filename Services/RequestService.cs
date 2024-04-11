@@ -4,9 +4,10 @@ using WizardFormBackend.Repositories;
 
 namespace WizardFormBackend.Services
 {
-    public class RequestService(IRequestRepository requestRepository) : IRequestService
+    public class RequestService(IRequestRepository requestRepository, IFileService fileService) : IRequestService
     {
         private readonly IRequestRepository _requestRepository = requestRepository;
+        private readonly IFileService _fileService = fileService;
 
         public async Task<IEnumerable<RequestDTO>> GetAllRequestAsync()
         {
@@ -41,9 +42,21 @@ namespace WizardFormBackend.Services
                 StatusCode = 1
             };
 
-            Request request = await _requestRepository.AddRequestAsync(newRequest);
-            requestDTO.RequestId = request.RequestId;
-            requestDTO.StatusCode = request.StatusCode;
+            IFormFile? file = requestDTO.AttachedFile;
+
+            
+            if(file != null)
+            {
+                FileDetail? savedFileDetail = await _fileService.AddFileAsync(file);
+                if(savedFileDetail != null)
+                {
+                    newRequest.FileId = savedFileDetail.FileId;
+                }
+            }
+            
+            Request savedRequest = await _requestRepository.AddRequestAsync(newRequest);
+            requestDTO.RequestId = savedRequest.RequestId;
+            requestDTO.StatusCode = savedRequest.StatusCode;
             return requestDTO;
         }
 

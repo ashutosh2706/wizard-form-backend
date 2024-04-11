@@ -10,5 +10,6 @@
         public int PriorityCode { get; set; }
         public int StatusCode { get; set; }
         public string Phone { get; set; } = string.Empty;
+        public IFormFile? AttachedFile { get; set; }
     }
 }

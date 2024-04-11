@@ -24,6 +24,7 @@ builder.Services.AddScoped<IStatusService, StatusService>();
 builder.Services.AddScoped<IPriorityService, PriorityService>();
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<IRequestService, RequestService>();
+builder.Services.AddScoped<IFileService, FileService>();
 
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
