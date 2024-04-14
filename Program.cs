@@ -4,6 +4,7 @@ using Microsoft.IdentityModel.Tokens;
 using System.Net;
 using System.Text;
 using WizardFormBackend.Data;
+using WizardFormBackend.Middleware;
 using WizardFormBackend.Repositories;
 using WizardFormBackend.Services;
 
@@ -79,6 +80,8 @@ app.UseExceptionHandler(options =>
 app.UseCors("ClientPermission");
 
 app.UseHttpsRedirection();
+
+app.UseMiddleware<ApiKeyAuthMiddleware>();
 
 app.UseAuthorization();
 
