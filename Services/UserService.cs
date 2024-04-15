@@ -38,7 +38,8 @@ namespace WizardFormBackend.Services
                     FirstName = user.FirstName,
                     LastName = user.LastName,
                     Email = user.Email,
-                    IsAllowed = user.Active ? "allowed" : "restricted"
+                    IsAllowed = user.Active ? "allowed" : "restricted",
+                    RoleId = user.RoleId
                 };
                 result.Add(userDTO);
             }
@@ -91,6 +92,16 @@ namespace WizardFormBackend.Services
                 
             }
             return null;
+        }
+
+        public async Task ChangeRoleAsync(long userId, int roleId)
+        {
+            User? user = await _userRepository.GetUserByUserIdAsync(userId);
+            if(user != null)
+            {
+                user.RoleId = roleId;
+                await _userRepository.UpdateUserAsync(user);
+            }
         }
 
     }

@@ -11,5 +11,6 @@ namespace WizardFormBackend.Services
         Task<IEnumerable<UserResponseDTO>> GetUsersAsync();
         Task UpdateUserAsync(UserDTO userDTO);
         Task<string?> AuthenticateUserAsync(LoginDTO loginDTO);
+        Task ChangeRoleAsync(long userId, int roleId);
     }
 }

@@ -49,6 +49,14 @@ namespace WizardFormBackend.Controllers
             return Ok();
         }
 
+        [HttpPut("roles")]
+        [Authorize(Roles = "admin")]
+        public async Task<IActionResult> ChangeRole(ChangeRoleDTO changeRoleDTO)
+        {
+            await _userService.ChangeRoleAsync(changeRoleDTO.UserId, changeRoleDTO.RoleId);
+            return Ok();
+        }
+
         [HttpDelete("{UserId}")]
         [Authorize(Roles = "admin")]
         public async Task<IActionResult> DeleteUser(long UserId)
