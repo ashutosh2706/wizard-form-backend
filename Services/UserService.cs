@@ -1,4 +1,6 @@
-﻿using WizardFormBackend.DTOs;
+﻿using Azure.Core;
+using WizardFormBackend.DTOs;
+using WizardFormBackend.DTOs.Paginated;
 using WizardFormBackend.Models;
 using WizardFormBackend.Repositories;
 using WizardFormBackend.Utils;
@@ -25,14 +27,19 @@ namespace WizardFormBackend.Services
 
             return await _userRepository.AddUserAsync(user);
         }
-
-        public async Task<IEnumerable<UserResponseDTO>> GetUsersAsync()
+        
+        public async Task<PaginatedUserResponseDTO> GetUsersAsync(string query, int page, int limit)
         {
-            IEnumerable<User> users = await _userRepository.GetAllUserAsync();
-            List<UserResponseDTO> result = new List<UserResponseDTO>();
-            foreach (User user in users)
+            IEnumerable<User> users = await _userRepository.GetAllUserAsync(query);
+
+            int totalPage = (int)Math.Ceiling((decimal)users.Count() / limit);              
+            IEnumerable<User> paginatedUsers = users.Skip((page - 1) * limit).Take(limit).ToList();
+
+            List<UserResponseDTO> result = [];
+
+            foreach (User user in paginatedUsers)
             {
-                UserResponseDTO userDTO = new UserResponseDTO
+                UserResponseDTO userDTO = new()
                 {
                     UserId = user.UserId,
                     FirstName = user.FirstName,
@@ -43,7 +50,7 @@ namespace WizardFormBackend.Services
                 };
                 result.Add(userDTO);
             }
-            return result;
+            return new PaginatedUserResponseDTO { Page = page, Limit = limit, Total = totalPage, Users = result };
 
         }
 
@@ -85,11 +92,17 @@ namespace WizardFormBackend.Services
         {
             string password = Util.GenerateHash(loginDTO.Password);
             User? existingUser = await _userRepository.GetUserByEmailAsync(loginDTO.Email);
-            if (existingUser != null && existingUser.Password == password && existingUser.Active)
+            if (existingUser != null && existingUser.Password == password)
             {
-                string roleType = await _roleService.GetRoleTypeAsync(existingUser.RoleId);
-                return new AuthProvider(_configuration).GetToken(existingUser, roleType);
-                
+                if(existingUser.Active)
+                {
+                    string roleType = await _roleService.GetRoleTypeAsync(existingUser.RoleId);
+                    return new AuthProvider(_configuration).GetToken(existingUser, roleType);
+                }
+                else
+                {
+                    return "";
+                }
             }
             return null;
         }

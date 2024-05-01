@@ -1,4 +1,5 @@
-﻿using WizardFormBackend.Models;
+﻿using WizardFormBackend.DTOs.Paginated;
+using WizardFormBackend.Models;
 
 namespace WizardFormBackend.Repositories
 {
@@ -6,7 +7,7 @@ namespace WizardFormBackend.Repositories
     {
         Task<User> AddUserAsync(User user);
         Task DeleteUserAsync(User user);
-        Task<IEnumerable<User>> GetAllUserAsync();
+        Task<IEnumerable<User>> GetAllUserAsync(string searchKeyword);
         Task<User?> GetUserByUserIdAsync(long userId);
         Task UpdateUserAsync(User user);
         Task<User?> GetUserByEmailAsync(string Email);

@@ -3,6 +3,12 @@ using System.Collections.Generic;
 
 namespace WizardFormBackend.Models;
 
+public enum Roles
+{
+    User = 1,
+    Admin = 2,
+}
+
 public partial class User
 {
     public long UserId { get; set; }

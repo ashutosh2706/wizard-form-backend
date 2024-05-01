@@ -1,4 +1,5 @@
 ﻿using WizardFormBackend.DTOs;
+using WizardFormBackend.DTOs.Paginated;
 using WizardFormBackend.Models;
 
 namespace WizardFormBackend.Services
@@ -8,7 +9,7 @@ namespace WizardFormBackend.Services
         Task<User> AddUserAsync(UserDTO userDTO);
         Task AllowUserAsync(long userId);
         Task DeleteUserAsync(long userId);
-        Task<IEnumerable<UserResponseDTO>> GetUsersAsync();
+        Task<PaginatedUserResponseDTO> GetUsersAsync(string query, int page, int limit);
         Task UpdateUserAsync(UserDTO userDTO);
         Task<string?> AuthenticateUserAsync(LoginDTO loginDTO);
         Task ChangeRoleAsync(long userId, int roleId);

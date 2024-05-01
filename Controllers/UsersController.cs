@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using WizardFormBackend.DTOs;
+using WizardFormBackend.DTOs.Paginated;
 using WizardFormBackend.Models;
 using WizardFormBackend.Services;
 
@@ -19,10 +19,10 @@ namespace WizardFormBackend.Controllers
 
         [HttpGet]
         [Authorize(Roles = "admin")]
-        public async Task<IActionResult> GetUsers()
+        public async Task<IActionResult> GetUsers(string query = "", int page = 1, int limit = 10)
         {
-            IEnumerable<UserResponseDTO> responseDTOs = await _userService.GetUsersAsync();
-            return Ok(responseDTOs);
+            PaginatedUserResponseDTO response = await _userService.GetUsersAsync(query, page, limit);
+            return Ok(response);
         }
 
 
@@ -30,8 +30,7 @@ namespace WizardFormBackend.Controllers
         public async Task<IActionResult> Login(LoginDTO loginDTO)
         {
             string? token = await _userService.AuthenticateUserAsync(loginDTO);
-            return token != null ? Ok(token) : BadRequest();
-            
+            return token != null && token != "" ? Ok(token) : token != null && token == "" ? Unauthorized() : BadRequest();
         }
 
         [HttpPost]

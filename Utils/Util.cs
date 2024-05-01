@@ -2,6 +2,7 @@
 using System.Security.Cryptography;
 using System.Text.RegularExpressions;
 using System.Net.Http.Headers;
+using static Microsoft.Extensions.Logging.EventSource.LoggingEventSource;
 
 namespace WizardFormBackend.Utils
 {
@@ -22,10 +23,24 @@ namespace WizardFormBackend.Utils
         }
 
 
-        public static string ReplaceSpecialChars(string fileName)
+        public static string SanitizeQuery(string query)
+        {
+            query = ReplaceSpecialChars(query);
+            string[] reservedKeywords = { "SELECT", "UPDATE", "DELETE", "INSERT", "ALTER", "DROP", "CREATE", "TRUNCATE", "RENAME", "JOIN", "INNER", "OUTER", "LEFT", "RIGHT", "WHERE", "FROM", "INTO", "SET", "VALUES", "ORDER", "BY", "GROUP", "HAVING", "LIMIT", "OFFSET", "TOP", "DISTINCT", "UNION", "ALL" };
+            foreach (var reservedKeyword in reservedKeywords)
+            {
+                string pattern = $@"\b{Regex.Escape(reservedKeyword)}\b";
+                // Replace all occurrences of the reserved keyword with an underscore
+                query = Regex.Replace(query, pattern, "_", RegexOptions.IgnoreCase);
+            }
+            return query;
+        }
+
+
+        public static string ReplaceSpecialChars(string input)
         {
             Regex reg = new("[*'\",&#^@\\/:?\"<>|]");
-            return reg.Replace(fileName, string.Empty);
+            return reg.Replace(input, string.Empty);
         }
 
 

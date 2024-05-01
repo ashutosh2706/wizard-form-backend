@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using WizardFormBackend.Data;
 using WizardFormBackend.Models;
+using WizardFormBackend.Utils;
 
 namespace WizardFormBackend.Repositories
 {
@@ -13,9 +14,17 @@ namespace WizardFormBackend.Repositories
             _dbContext = dbContext;
         }
 
-        public async Task<IEnumerable<User>> GetAllUserAsync()
+        public async Task<IEnumerable<User>> GetAllUserAsync(string searchKeyword)
         {
-            return await _dbContext.Users.ToListAsync();
+            searchKeyword = Util.SanitizeQuery(searchKeyword.ToLower());
+
+            return await _dbContext.Users.Where(r => r.UserId.ToString() == searchKeyword ||
+                r.FirstName.ToLower().Contains(searchKeyword) ||
+                r.LastName.ToLower().Contains(searchKeyword) ||
+                r.Email.ToLower().Contains(searchKeyword) ||
+                (r.RoleId == (int)Roles.User && "user".Contains(searchKeyword)) ||
+                (r.RoleId == (int)Roles.Admin && "admin".Contains(searchKeyword))
+            ).ToListAsync();
         }
 
         public async Task<User?> GetUserByUserIdAsync(long userId)

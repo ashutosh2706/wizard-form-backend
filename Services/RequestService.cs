@@ -1,4 +1,5 @@
 ﻿using WizardFormBackend.DTOs;
+using WizardFormBackend.DTOs.Paginated;
 using WizardFormBackend.Models;
 using WizardFormBackend.Repositories;
 
@@ -9,13 +10,17 @@ namespace WizardFormBackend.Services
         private readonly IRequestRepository _requestRepository = requestRepository;
         private readonly IFileService _fileService = fileService;
 
-        public async Task<IEnumerable<RequestDTO>> GetAllRequestAsync()
+        public async Task<PaginatedRequestDTO> GetAllRequestAsync(string query, int page, int limit)
         {
-            IEnumerable<Request> requests = await _requestRepository.GetAllRequestAsync();
-            List<RequestDTO> requestDTOs = new List<RequestDTO>();
-            foreach (Request request in requests)
+            IEnumerable<Request> requests = await _requestRepository.GetAllRequestAsync(query);
+
+            int totalPage = (int)Math.Ceiling((decimal)requests.Count() / limit);
+            IEnumerable<Request> paginatedRequests = requests.Skip((page - 1) * limit).Take(limit).ToList();
+
+            List<RequestDTO> result = [];
+            foreach (Request request in paginatedRequests)
             {
-                requestDTOs.Add(new RequestDTO
+                result.Add(new RequestDTO
                 {
                     RequestId = request.RequestId,
                     UserId = request.UserId,
@@ -26,7 +31,7 @@ namespace WizardFormBackend.Services
                     StatusCode = request.StatusCode
                 });
             }
-            return requestDTOs;
+            return new PaginatedRequestDTO { Page = page, Limit = limit, Total = totalPage, Requests = result };
         }
 
         public async Task<RequestDTO> AddRequestAsync(RequestDTO requestDTO)
@@ -65,17 +70,20 @@ namespace WizardFormBackend.Services
             Request? existingRequest = await _requestRepository.GetRequestByRequestIdAsync(requestId);
             if (existingRequest != null)
             {
-                existingRequest.StatusCode = statusCode;    // => 2: approved 3:rejected
+                existingRequest.StatusCode = statusCode;
                 await _requestRepository.UpdateRequestAsync(existingRequest);
             }
         }
 
 
-        public async Task<IEnumerable<RequestDTO>> GetAllRequestByUserIdAsync(long userId)
+        public async Task<PaginatedRequestDTO> GetAllRequestByUserIdAsync(long userId, string filterQuery, int page, int limit)
         {
-            IEnumerable<Request> requests = await _requestRepository.GetAllRequestByUserIdAsync(userId);
-            List<RequestDTO> result = new List<RequestDTO>();
-            foreach (Request request in requests)
+            IEnumerable<Request> requests = await _requestRepository.GetAllRequestByUserIdAsync(userId, filterQuery);
+            int totalPage = (int)Math.Ceiling((decimal)requests.Count() / limit);
+            IEnumerable<Request> paginatedRequests = requests.Skip((page - 1) * limit).Take(limit).ToList();
+
+            List<RequestDTO> result = [];
+            foreach (Request request in paginatedRequests)
             {
                 result.Add(new RequestDTO
                 {
@@ -87,7 +95,8 @@ namespace WizardFormBackend.Services
                     StatusCode = request.StatusCode
                 });
             }
-            return result;
+            
+            return new PaginatedRequestDTO { Page = page, Limit = limit, Total = totalPage, Requests = result };
         }
 
         public async Task<RequestDTO?> GetRequestByRequestIdAsync(long requestId)

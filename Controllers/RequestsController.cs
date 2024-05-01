@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using WizardFormBackend.DTOs;
+using WizardFormBackend.DTOs.Paginated;
 using WizardFormBackend.Services;
 
 namespace WizardFormBackend.Controllers
@@ -17,17 +18,17 @@ namespace WizardFormBackend.Controllers
 
         [HttpGet]
         [Authorize(Roles = "admin")]
-        public async Task<IActionResult> GetAllRequest()
+        public async Task<IActionResult> GetAllRequest(string query = "", int page = 1, int limit = 10)
         {
-            IEnumerable<RequestDTO> requestDTOs = await _requestService.GetAllRequestAsync();
-            return Ok(requestDTOs);
+            PaginatedRequestDTO response = await _requestService.GetAllRequestAsync(query, page, limit);
+            return Ok(response);
         }
 
         [HttpGet("user/{UserId}")]
-        public async Task<IActionResult> GetAllRequestByUser(long UserId)
+        public async Task<IActionResult> GetAllRequestByUserId(long UserId, string query = "", int page = 1, int limit = 10)
         {
-            IEnumerable<RequestDTO> requestDTOs = await _requestService.GetAllRequestByUserIdAsync(UserId);
-            return Ok(requestDTOs);
+            PaginatedRequestDTO response = await _requestService.GetAllRequestByUserIdAsync(UserId, query, page, limit);
+            return Ok(response);
         }
 
         [HttpGet("{RequestId}")]
