@@ -1,5 +1,4 @@
-﻿using WizardFormBackend.DTOs.Paginated;
-using WizardFormBackend.Models;
+﻿using WizardFormBackend.Models;
 
 namespace WizardFormBackend.Repositories
 {

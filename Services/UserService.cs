@@ -1,6 +1,5 @@
 ﻿using Azure.Core;
 using WizardFormBackend.DTOs;
-using WizardFormBackend.DTOs.Paginated;
 using WizardFormBackend.Models;
 using WizardFormBackend.Repositories;
 using WizardFormBackend.Utils;
@@ -28,18 +27,18 @@ namespace WizardFormBackend.Services
             return await _userRepository.AddUserAsync(user);
         }
         
-        public async Task<PaginatedUserResponseDTO> GetUsersAsync(string query, int page, int limit)
+        public async Task<PaginatedResponseDTO<UserResponseDto>> GetUsersAsync(string searchTerm, int pageNumber, int pageSize)
         {
-            IEnumerable<User> users = await _userRepository.GetAllUserAsync(query);
+            IEnumerable<User> users = await _userRepository.GetAllUserAsync(searchTerm);
 
-            int totalPage = (int)Math.Ceiling((decimal)users.Count() / limit);              
-            IEnumerable<User> paginatedUsers = users.Skip((page - 1) * limit).Take(limit).ToList();
+            int totalPage = (int)Math.Ceiling((decimal)users.Count() / pageSize);              
+            IEnumerable<User> paginatedUsers = users.Skip((pageNumber - 1) * pageSize).Take(pageSize).ToList();
 
-            List<UserResponseDTO> result = [];
+            List<UserResponseDto> result = [];
 
             foreach (User user in paginatedUsers)
             {
-                UserResponseDTO userDTO = new()
+                UserResponseDto userDTO = new()
                 {
                     UserId = user.UserId,
                     FirstName = user.FirstName,
@@ -50,7 +49,7 @@ namespace WizardFormBackend.Services
                 };
                 result.Add(userDTO);
             }
-            return new PaginatedUserResponseDTO { Page = page, Limit = limit, Total = totalPage, Users = result };
+            return new PaginatedResponseDTO<UserResponseDto> { PageNumber = pageNumber, TotalPage = totalPage, PageSize = pageSize, Items = result };
 
         }
 

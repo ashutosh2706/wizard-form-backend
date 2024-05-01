@@ -1,8 +1,8 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using WizardFormBackend.DTOs;
-using WizardFormBackend.DTOs.Paginated;
 using WizardFormBackend.Services;
+using WizardFormBackend.Utils;
 
 namespace WizardFormBackend.Controllers
 {
@@ -18,21 +18,21 @@ namespace WizardFormBackend.Controllers
 
         [HttpGet]
         [Authorize(Roles = "admin")]
-        public async Task<IActionResult> GetAllRequest(string query = "", int page = 1, int limit = 10)
+        public async Task<IActionResult> GetAllRequest([FromQuery]QueryParams queryParams)
         {
-            PaginatedRequestDTO response = await _requestService.GetAllRequestAsync(query, page, limit);
+            PaginatedResponseDTO<RequestDTO> response = await _requestService.GetAllRequestAsync(queryParams.SearchTerm, queryParams.PageNumber, queryParams.PageSize);
             return Ok(response);
         }
 
         [HttpGet("user/{UserId}")]
-        public async Task<IActionResult> GetAllRequestByUserId(long UserId, string query = "", int page = 1, int limit = 10)
+        public async Task<IActionResult> GetAllRequestByUserId(long UserId, [FromQuery]QueryParams queryParams)
         {
-            PaginatedRequestDTO response = await _requestService.GetAllRequestByUserIdAsync(UserId, query, page, limit);
+            PaginatedResponseDTO<RequestDTO> response = await _requestService.GetAllRequestByUserIdAsync(UserId, queryParams.SearchTerm, queryParams.PageNumber, queryParams.PageSize);
             return Ok(response);
         }
 
         [HttpGet("{RequestId}")]
-        public async Task<IActionResult> GetRequestByRerquestId(long RequestId)
+        public async Task<IActionResult> GetRequestByRequestId(long RequestId)
         {
             RequestDTO? requestDTO = await _requestService.GetRequestByRequestIdAsync(RequestId);
             return requestDTO != null ? Ok(requestDTO) : NotFound();
@@ -41,7 +41,7 @@ namespace WizardFormBackend.Controllers
         [HttpPost]
         public async Task<IActionResult> AddRequest([FromForm] RequestDTO requestDTO)
         {
-            RequestDTO response = await _requestService.AddRequestAsync(requestDTO);
+            RequestDTO? response = await _requestService.AddRequestAsync(requestDTO);
             return Created("/Requests", response);
         }
 

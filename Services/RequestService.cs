@@ -1,5 +1,4 @@
 ﻿using WizardFormBackend.DTOs;
-using WizardFormBackend.DTOs.Paginated;
 using WizardFormBackend.Models;
 using WizardFormBackend.Repositories;
 
@@ -10,12 +9,12 @@ namespace WizardFormBackend.Services
         private readonly IRequestRepository _requestRepository = requestRepository;
         private readonly IFileService _fileService = fileService;
 
-        public async Task<PaginatedRequestDTO> GetAllRequestAsync(string query, int page, int limit)
+        public async Task<PaginatedResponseDTO<RequestDTO>> GetAllRequestAsync(string searchTerm, int pageNumber, int pageSize)
         {
-            IEnumerable<Request> requests = await _requestRepository.GetAllRequestAsync(query);
+            IEnumerable<Request> requests = await _requestRepository.GetAllRequestAsync(searchTerm);
 
-            int totalPage = (int)Math.Ceiling((decimal)requests.Count() / limit);
-            IEnumerable<Request> paginatedRequests = requests.Skip((page - 1) * limit).Take(limit).ToList();
+            int totalPage = (int)Math.Ceiling((decimal)requests.Count() / pageSize);
+            IEnumerable<Request> paginatedRequests = requests.Skip((pageNumber - 1) * pageSize).Take(pageSize).ToList();
 
             List<RequestDTO> result = [];
             foreach (Request request in paginatedRequests)
@@ -31,7 +30,7 @@ namespace WizardFormBackend.Services
                     StatusCode = request.StatusCode
                 });
             }
-            return new PaginatedRequestDTO { Page = page, Limit = limit, Total = totalPage, Requests = result };
+            return new PaginatedResponseDTO<RequestDTO> { PageNumber = pageNumber, TotalPage = totalPage, PageSize = pageSize, Items = result };
         }
 
         public async Task<RequestDTO> AddRequestAsync(RequestDTO requestDTO)
@@ -76,11 +75,11 @@ namespace WizardFormBackend.Services
         }
 
 
-        public async Task<PaginatedRequestDTO> GetAllRequestByUserIdAsync(long userId, string filterQuery, int page, int limit)
+        public async Task<PaginatedResponseDTO<RequestDTO>> GetAllRequestByUserIdAsync(long userId, string searchTerm, int pageNumber, int pageSize)
         {
-            IEnumerable<Request> requests = await _requestRepository.GetAllRequestByUserIdAsync(userId, filterQuery);
-            int totalPage = (int)Math.Ceiling((decimal)requests.Count() / limit);
-            IEnumerable<Request> paginatedRequests = requests.Skip((page - 1) * limit).Take(limit).ToList();
+            IEnumerable<Request> requests = await _requestRepository.GetAllRequestByUserIdAsync(userId, searchTerm);
+            int totalPage = (int)Math.Ceiling((decimal)requests.Count() / pageSize);
+            IEnumerable<Request> paginatedRequests = requests.Skip((pageNumber - 1) * pageSize).Take(pageSize).ToList();
 
             List<RequestDTO> result = [];
             foreach (Request request in paginatedRequests)
@@ -96,7 +95,7 @@ namespace WizardFormBackend.Services
                 });
             }
             
-            return new PaginatedRequestDTO { Page = page, Limit = limit, Total = totalPage, Requests = result };
+            return new PaginatedResponseDTO<RequestDTO> { PageNumber = pageNumber, TotalPage = totalPage, PageSize = pageSize, Items = result };
         }
 
         public async Task<RequestDTO?> GetRequestByRequestIdAsync(long requestId)

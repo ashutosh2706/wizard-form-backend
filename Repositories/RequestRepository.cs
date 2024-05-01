@@ -27,7 +27,7 @@ namespace WizardFormBackend.Repositories
                 (r.StatusCode == (int)StatusCode.Pending && "pending".Contains(searchKeyword)) ||
                 (r.StatusCode == (int)StatusCode.Approved && "approved".Contains(searchKeyword)) ||
                 (r.StatusCode == (int)StatusCode.Rejected && "rejected".Contains(searchKeyword))
-            ).OrderByDescending(r => r.RequestId).ToListAsync();
+            ).ToListAsync();
         }
 
         public async Task<Request?> GetRequestByRequestIdAsync(long requestId)
@@ -46,7 +46,7 @@ namespace WizardFormBackend.Repositories
                 (r.StatusCode == (int)StatusCode.Pending && "pending".Contains(searchKeyword)) || 
                 (r.StatusCode == (int)StatusCode.Approved && "approved".Contains(searchKeyword)) ||
                 (r.StatusCode == (int)StatusCode.Rejected && "rejected".Contains(searchKeyword))
-            ).OrderByDescending(r => r.RequestId).ToListAsync();
+            ).ToListAsync();
 
         }
 

@@ -1,9 +1,9 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using WizardFormBackend.DTOs;
-using WizardFormBackend.DTOs.Paginated;
 using WizardFormBackend.Models;
 using WizardFormBackend.Services;
+using WizardFormBackend.Utils;
 
 namespace WizardFormBackend.Controllers
 {
@@ -19,15 +19,15 @@ namespace WizardFormBackend.Controllers
 
         [HttpGet]
         [Authorize(Roles = "admin")]
-        public async Task<IActionResult> GetUsers(string query = "", int page = 1, int limit = 10)
+        public async Task<IActionResult> GetUsers([FromQuery]QueryParams queryParams)
         {
-            PaginatedUserResponseDTO response = await _userService.GetUsersAsync(query, page, limit);
+            PaginatedResponseDTO<UserResponseDto> response = await _userService.GetUsersAsync(queryParams.SearchTerm, queryParams.PageNumber, queryParams.PageSize);
             return Ok(response);
         }
 
 
         [HttpPost("login")]
-        public async Task<IActionResult> Login(LoginDTO loginDTO)
+        public async Task<IActionResult> Authenticate(LoginDTO loginDTO)
         {
             string? token = await _userService.AuthenticateUserAsync(loginDTO);
             return token != null && token != "" ? Ok(token) : token != null && token == "" ? Unauthorized() : BadRequest();
@@ -48,7 +48,7 @@ namespace WizardFormBackend.Controllers
             return Ok();
         }
 
-        [HttpPut("roles")]
+        [HttpPut("change-role")]
         [Authorize(Roles = "admin")]
         public async Task<IActionResult> ChangeRole(ChangeRoleDTO changeRoleDTO)
         {
@@ -56,7 +56,7 @@ namespace WizardFormBackend.Controllers
             return Ok();
         }
 
-        [HttpDelete("{UserId}")]
+        [HttpDelete("delete/{UserId}")]
         [Authorize(Roles = "admin")]
         public async Task<IActionResult> DeleteUser(long UserId)
         {
