@@ -1,11 +1,11 @@
-﻿using WizardFormBackend.DTOs;
+﻿using WizardFormBackend.Dto;
 
 namespace WizardFormBackend.Services
 {
     public interface IStatusService
     {
-        Task<StatusDTO> AddStatusAsync(StatusDTO statusDTO);
+        Task<StatusDto> AddStatusAsync(StatusDto statusDto);
         Task DeleteStatusAsync(int statusCode);
-        Task<IEnumerable<StatusDTO>> GetStatusesAsync();
+        Task<IEnumerable<StatusDto>> GetStatusesAsync();
     }
 }

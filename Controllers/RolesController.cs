@@ -1,7 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using WizardFormBackend.DTOs;
+using WizardFormBackend.Dto;
 using WizardFormBackend.Services;
 
 namespace WizardFormBackend.Controllers
@@ -19,15 +18,15 @@ namespace WizardFormBackend.Controllers
         [HttpGet]
         public async Task<IActionResult> GetAllRole()
         {
-            IEnumerable<RoleDTO> roles = await _roleService.GetRolesAsync();
+            IEnumerable<RoleDto> roles = await _roleService.GetRolesAsync();
             return Ok(roles);
         }
 
         [HttpPost]
         [Authorize(Roles = "admin")]
-        public async Task<IActionResult> AddRole(RoleDTO roleDTO)
+        public async Task<IActionResult> AddRole(RoleDto roleDto)
         {
-            RoleDTO role = await _roleService.AddRoleAsync(roleDTO);
+            RoleDto role = await _roleService.AddRoleAsync(roleDto);
             return Created("/Roles", role);
         }
 

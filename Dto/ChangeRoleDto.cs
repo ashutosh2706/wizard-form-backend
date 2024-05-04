@@ -1,6 +1,6 @@
-﻿namespace WizardFormBackend.DTOs
+﻿namespace WizardFormBackend.Dto
 {
-    public class ChangeRoleDTO
+    public class ChangeRoleDto
     {
         public long UserId { get; set; }
         public int RoleId { get; set; } 

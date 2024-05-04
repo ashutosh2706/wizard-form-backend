@@ -1,4 +1,4 @@
-﻿namespace WizardFormBackend.DTOs
+﻿namespace WizardFormBackend.Dto
 {
     public class UserResponseDto
     {

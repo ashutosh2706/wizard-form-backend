@@ -1,8 +1,6 @@
 ﻿using System.Text;
 using System.Security.Cryptography;
 using System.Text.RegularExpressions;
-using System.Net.Http.Headers;
-using static Microsoft.Extensions.Logging.EventSource.LoggingEventSource;
 
 namespace WizardFormBackend.Utils
 {
@@ -23,7 +21,7 @@ namespace WizardFormBackend.Utils
         }
 
 
-        public static string SanitizeQuery(string query)
+        public static string Sanitize(string query)
         {
             query = ReplaceSpecialChars(query);
             string[] reservedKeywords = { "SELECT", "UPDATE", "DELETE", "INSERT", "ALTER", "DROP", "CREATE", "TRUNCATE", "RENAME", "JOIN", "INNER", "OUTER", "LEFT", "RIGHT", "WHERE", "FROM", "INTO", "SET", "VALUES", "ORDER", "BY", "GROUP", "HAVING", "LIMIT", "OFFSET", "TOP", "DISTINCT", "UNION", "ALL" };

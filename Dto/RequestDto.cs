@@ -1,6 +1,6 @@
-﻿namespace WizardFormBackend.DTOs
+﻿namespace WizardFormBackend.Dto
 {
-    public class RequestDTO
+    public class RequestDto
     {
         public long RequestId { get; set; }
         public long UserId { get; set; }

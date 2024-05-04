@@ -1,7 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using WizardFormBackend.DTOs;
+using WizardFormBackend.Dto;
 using WizardFormBackend.Services;
 
 namespace WizardFormBackend.Controllers
@@ -19,15 +18,15 @@ namespace WizardFormBackend.Controllers
         [HttpGet]
         public async Task<IActionResult> GetPriorities()
         {
-            IEnumerable<PriorityDTO> priorityDTOs = await _priorityService.GetPrioritiesAsync();
+            IEnumerable<PriorityDto> priorityDTOs = await _priorityService.GetPrioritiesAsync();
             return Ok(priorityDTOs);
         }
 
         [HttpPost]
         [Authorize(Roles = "admin")]
-        public async Task<IActionResult> AddPriority(PriorityDTO priorityDTO)
+        public async Task<IActionResult> AddPriority(PriorityDto priorityDto)
         {
-            PriorityDTO responseDTO = await _priorityService.AddPriorityAsync(priorityDTO);
+            PriorityDto responseDTO = await _priorityService.AddPriorityAsync(priorityDto);
             return Created("/Priority", responseDTO);
         }
 

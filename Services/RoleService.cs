@@ -1,44 +1,33 @@
-﻿using WizardFormBackend.DTOs;
+﻿using AutoMapper;
+using WizardFormBackend.Dto;
 using WizardFormBackend.Models;
 using WizardFormBackend.Repositories;
 
 namespace WizardFormBackend.Services
 {
-    public class RoleService(IRoleRepository roleRepository) : IRoleService
+    public class RoleService(IRoleRepository roleRepository, IMapper mapper) : IRoleService
     {
         private readonly IRoleRepository _roleRepository = roleRepository;
+        private readonly IMapper _mapper = mapper;
 
-        public async Task<IEnumerable<RoleDTO>> GetRolesAsync()
+        public async Task<IEnumerable<RoleDto>> GetRolesAsync()
         {
             IEnumerable<Role> roles = await _roleRepository.GetAllRoleAsync();
-            List<RoleDTO> roleDTOs = new List<RoleDTO>();
-            foreach (Role role in roles)
-            {
-                roleDTOs.Add(new RoleDTO { RoleId = role.RoleId, RoleType = role.RoleType });
-            }
+            List<RoleDto> roleDTOs = _mapper.Map<IEnumerable<Role>, List<RoleDto>>(roles);
             return roleDTOs;
         }
 
-        public async Task<RoleDTO> AddRoleAsync(RoleDTO roleDTO)
+        public async Task<RoleDto> AddRoleAsync(RoleDto roleDto)
         {
-            Role role = new()
-            {
-                RoleId = roleDTO.RoleId,
-                RoleType = roleDTO.RoleType
-            };
-
+            Role role = _mapper.Map<RoleDto, Role>(roleDto);
             Role newRole = await _roleRepository.AddRoleAsync(role);
-            return new RoleDTO { RoleId = newRole.RoleId, RoleType = newRole.RoleType };
+            return _mapper.Map<Role, RoleDto>(newRole);
         }
 
         public async Task<string> GetRoleTypeAsync(int roleId)
         {
             Role? role = await _roleRepository.GetRoleByRoleIdAsync(roleId);
-            if(role != null)
-            {
-                return role.RoleType;
-            }
-            return string.Empty;
+            return role != null ? role.RoleType : string.Empty;
         }
 
         public async Task DeleteRoleAsync(int roleId)

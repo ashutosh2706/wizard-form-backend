@@ -1,6 +1,6 @@
-﻿namespace WizardFormBackend.DTOs
+﻿namespace WizardFormBackend.Dto
 {
-    public class PaginatedResponseDTO<T>
+    public class PaginatedResponseDto<T>
     {
         public int PageNumber { get; set; }
         public int PageSize { get; set; }

@@ -1,6 +1,6 @@
-﻿namespace WizardFormBackend.DTOs
+﻿namespace WizardFormBackend.Dto
 {
-    public class RoleDTO
+    public class RoleDto
     {
         public required int RoleId { get; set; }
         public string RoleType { get; set; } = string.Empty;

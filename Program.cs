@@ -1,10 +1,14 @@
+using AutoMapper;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.IdentityModel.Tokens;
 using System.Net;
 using System.Text;
 using WizardFormBackend.Data;
+using WizardFormBackend.Dto;
+using WizardFormBackend.Mappings;
 using WizardFormBackend.Middleware;
+using WizardFormBackend.Models;
 using WizardFormBackend.Repositories;
 using WizardFormBackend.Services;
 
@@ -30,6 +34,24 @@ builder.Services.AddScoped<IFileService, FileService>();
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+
+
+IMapper mapper = new MapperConfiguration(cfg =>
+{
+    cfg.AddProfile<MapperProfile<Request, RequestDto>>();
+    cfg.AddProfile<MapperProfile<RequestDto, Request>>();
+    cfg.AddProfile<MapperProfile<UserDto, User>>();
+    cfg.AddProfile<MapperProfile<User, UserResponseDto>>();
+    cfg.AddProfile<MapperProfile<Priority, PriorityDto>>();
+    cfg.AddProfile<MapperProfile<PriorityDto, Priority>>();
+    cfg.AddProfile<MapperProfile<Role, RoleDto>>();
+    cfg.AddProfile<MapperProfile<RoleDto, Role>>();
+    cfg.AddProfile<MapperProfile<Status, StatusDto>>();
+    cfg.AddProfile<MapperProfile<StatusDto, Status>>();
+}
+).CreateMapper();
+
+builder.Services.AddSingleton(mapper);
 
 builder.Services.AddCors(options =>
 {

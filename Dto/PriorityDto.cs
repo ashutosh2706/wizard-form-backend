@@ -1,6 +1,6 @@
-﻿namespace WizardFormBackend.DTOs
+﻿namespace WizardFormBackend.Dto
 {
-    public class PriorityDTO
+    public class PriorityDto
     {
         public int PriorityCode { get; set; }
         public string Description { get; set; } = string.Empty;

@@ -16,7 +16,7 @@ namespace WizardFormBackend.Repositories
 
         public async Task<IEnumerable<User>> GetAllUserAsync(string searchKeyword)
         {
-            searchKeyword = Util.SanitizeQuery(searchKeyword.ToLower());
+            searchKeyword = Util.Sanitize(searchKeyword.ToLower());
 
             return await _dbContext.Users.Where(r => r.UserId.ToString() == searchKeyword ||
                 r.FirstName.ToLower().Contains(searchKeyword) ||

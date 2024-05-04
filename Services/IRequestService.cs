@@ -1,14 +1,14 @@
-﻿using WizardFormBackend.DTOs;
+﻿using WizardFormBackend.Dto;
 
 namespace WizardFormBackend.Services
 {
     public interface IRequestService
     {
-        Task<RequestDTO> AddRequestAsync(RequestDTO requestDTO);
+        Task<RequestDto> AddRequestAsync(RequestDto requestDto);
         Task DeleteRequestAsync(long requestId);
-        Task<PaginatedResponseDTO<RequestDTO>> GetAllRequestAsync(string searchTerm, int pageNumber, int pageSize);
-        Task<PaginatedResponseDTO<RequestDTO>> GetAllRequestByUserIdAsync(long userId, string searchTerm, int pageNumber, int pageSize);
+        Task<PaginatedResponseDto<RequestDto>> GetAllRequestAsync(string searchTerm, int pageNumber, int pageSize, string sortField, string sortDirection);
+        Task<PaginatedResponseDto<RequestDto>> GetAllRequestByUserIdAsync(long userId, string searchTerm, int pageNumber, int pageSize, string sortField, string sortDirection);
         Task UpdateRequestStatusAsync(long requestId, int statusCode);
-        Task<RequestDTO?> GetRequestByRequestIdAsync(long requestId);
+        Task<RequestDto?> GetRequestByRequestIdAsync(long requestId);
     }
 }

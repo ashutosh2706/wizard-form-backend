@@ -1,13 +1,12 @@
-﻿using WizardFormBackend.DTOs;
-using WizardFormBackend.Models;
+﻿using WizardFormBackend.Dto;
 
 namespace WizardFormBackend.Services
 {
     public interface IRoleService
     {
-        Task<RoleDTO> AddRoleAsync(RoleDTO roleDTO);
+        Task<RoleDto> AddRoleAsync(RoleDto roleDto);
         Task DeleteRoleAsync(int roleId);
         Task<string> GetRoleTypeAsync(int roleId);
-        Task<IEnumerable<RoleDTO>> GetRolesAsync();
+        Task<IEnumerable<RoleDto>> GetRolesAsync();
     }
 }

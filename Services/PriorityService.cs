@@ -1,39 +1,27 @@
 ﻿using WizardFormBackend.Repositories;
 using WizardFormBackend.Models;
-using WizardFormBackend.DTOs;
+using WizardFormBackend.Dto;
+using AutoMapper;
 
 namespace WizardFormBackend.Services
 {
-    public class PriorityService(IPriorityRepository priorityRepository) : IPriorityService
+    public class PriorityService(IPriorityRepository priorityRepository, IMapper mapper) : IPriorityService
     {
         private readonly IPriorityRepository _priorityRepository = priorityRepository;
+        private readonly IMapper _mapper = mapper;
 
-        public async Task<IEnumerable<PriorityDTO>> GetPrioritiesAsync()
+        public async Task<IEnumerable<PriorityDto>> GetPrioritiesAsync()
         {
             IEnumerable<Priority> priorities = await _priorityRepository.GetAllPriorityAsync();
-            List<PriorityDTO> priorityDTOs = new List<PriorityDTO>();
-            foreach (var priority in priorities)
-            {
-                priorityDTOs.Add(new PriorityDTO
-                {
-                    PriorityCode = priority.PriorityCode,
-                    Description = priority.Description
-                });
-            }
-
-            return priorityDTOs;
+            return _mapper.Map<IEnumerable<Priority>, List<PriorityDto>>(priorities);
         }
 
-        public async Task<PriorityDTO> AddPriorityAsync(PriorityDTO priorityDTO)
+        public async Task<PriorityDto> AddPriorityAsync(PriorityDto priorityDto)
         {
-            Priority priority = new()
-            {
-                PriorityCode = priorityDTO.PriorityCode,
-                Description = priorityDTO.Description
-            };
 
+            Priority priority = _mapper.Map<PriorityDto, Priority>(priorityDto);
             Priority newPriority = await _priorityRepository.AddPriorityAsync(priority);
-            return new PriorityDTO { PriorityCode = newPriority.PriorityCode, Description = newPriority.Description };
+            return new PriorityDto { PriorityCode = newPriority.PriorityCode, Description = newPriority.Description };
         }
 
         public async Task DeletePriorityAsync(int priorityCode)

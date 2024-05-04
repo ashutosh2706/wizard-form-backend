@@ -1,39 +1,33 @@
-﻿using Azure.Core;
-using WizardFormBackend.DTOs;
+﻿using AutoMapper;
+using WizardFormBackend.Dto;
 using WizardFormBackend.Models;
 using WizardFormBackend.Repositories;
 using WizardFormBackend.Utils;
 
 namespace WizardFormBackend.Services
 {
-    public class UserService(IUserRepository userRepository, IRoleService roleService, IConfiguration configuration) : IUserService
+    public class UserService(IUserRepository userRepository, IRoleService roleService, IConfiguration configuration, IMapper mapper) : IUserService
     {
         private readonly IUserRepository _userRepository = userRepository;
         private readonly IConfiguration _configuration = configuration;
         private readonly IRoleService _roleService = roleService;
+        private readonly IMapper _mapper = mapper;
 
-        public async Task<User> AddUserAsync(UserDTO userDTO)
+        public async Task<User> AddUserAsync(UserDto userDto)
         {
-            User user = new()
-            {
-                FirstName = userDTO.FirstName,
-                LastName = userDTO.LastName,
-                Email = userDTO.Email,
-                Password = Util.GenerateHash(userDTO.Password),
-                RoleId = userDTO.RoleId,
-                Active = false
-            };
+            User user = _mapper.Map<UserDto, User>(userDto);
+            user.Password = Util.GenerateHash(userDto.Password);
+            user.Active = false;
 
             return await _userRepository.AddUserAsync(user);
         }
         
-        public async Task<PaginatedResponseDTO<UserResponseDto>> GetUsersAsync(string searchTerm, int pageNumber, int pageSize)
+        public async Task<PaginatedResponseDto<UserResponseDto>> GetUsersAsync(string searchTerm, int pageNumber, int pageSize)
         {
             IEnumerable<User> users = await _userRepository.GetAllUserAsync(searchTerm);
 
             int totalPage = (int)Math.Ceiling((decimal)users.Count() / pageSize);              
             IEnumerable<User> paginatedUsers = users.Skip((pageNumber - 1) * pageSize).Take(pageSize).ToList();
-
             List<UserResponseDto> result = [];
 
             foreach (User user in paginatedUsers)
@@ -49,11 +43,11 @@ namespace WizardFormBackend.Services
                 };
                 result.Add(userDTO);
             }
-            return new PaginatedResponseDTO<UserResponseDto> { PageNumber = pageNumber, TotalPage = totalPage, PageSize = pageSize, Items = result };
+            return new PaginatedResponseDto<UserResponseDto> { PageNumber = pageNumber, TotalPage = totalPage, PageSize = pageSize, Items = result };
 
         }
 
-        public async Task UpdateUserAsync(UserDTO userDTO)
+        public async Task UpdateUserAsync(UserDto userDTO)
         {
             User? existingUser = await _userRepository.GetUserByUserIdAsync(userDTO.UserId);
             if (existingUser != null)
@@ -87,10 +81,10 @@ namespace WizardFormBackend.Services
             }
         }
 
-        public async Task<string?> AuthenticateUserAsync(LoginDTO loginDTO)
+        public async Task<string?> AuthenticateUserAsync(LoginDto loginDto)
         {
-            string password = Util.GenerateHash(loginDTO.Password);
-            User? existingUser = await _userRepository.GetUserByEmailAsync(loginDTO.Email);
+            string password = Util.GenerateHash(loginDto.Password);
+            User? existingUser = await _userRepository.GetUserByEmailAsync(loginDto.Email);
             if (existingUser != null && existingUser.Password == password)
             {
                 if(existingUser.Active)

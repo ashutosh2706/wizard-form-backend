@@ -1,11 +1,11 @@
-﻿using WizardFormBackend.DTOs;
+﻿using WizardFormBackend.Dto;
 
 namespace WizardFormBackend.Services
 {
     public interface IPriorityService
     {
-        Task<PriorityDTO> AddPriorityAsync(PriorityDTO priorityDTO);
+        Task<PriorityDto> AddPriorityAsync(PriorityDto priorityDto);
         Task DeletePriorityAsync(int priorityCode);
-        Task<IEnumerable<PriorityDTO>> GetPrioritiesAsync();
+        Task<IEnumerable<PriorityDto>> GetPrioritiesAsync();
     }
 }

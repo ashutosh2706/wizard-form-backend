@@ -1,4 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using System.Linq.Dynamic.Core;
+using System.Reflection;
 using WizardFormBackend.Data;
 using WizardFormBackend.Models;
 using WizardFormBackend.Utils;
@@ -15,7 +17,7 @@ namespace WizardFormBackend.Repositories
 
         public async Task<IEnumerable<Request>> GetAllRequestAsync(string searchKeyword)
         {
-            searchKeyword = Util.SanitizeQuery(searchKeyword.ToLower());
+            searchKeyword = Util.Sanitize(searchKeyword.ToLower());
             
             return await _dbContext.Requests.Where(r =>
                 r.RequestId.ToString() == searchKeyword ||
@@ -37,17 +39,16 @@ namespace WizardFormBackend.Repositories
 
         public async Task<IEnumerable<Request>> GetAllRequestByUserIdAsync(long userId, string searchKeyword)
         {
-            searchKeyword = Util.SanitizeQuery(searchKeyword.ToLower());
+            searchKeyword = Util.Sanitize(searchKeyword.ToLower());
 
             return await _dbContext.Requests.Where(r => r.UserId == userId).Where(r =>
                 r.RequestId.ToString() == searchKeyword ||
                 r.RequestDate.ToString().ToLower().Contains(searchKeyword) ||
                 r.Title.ToLower().Contains(searchKeyword) ||
-                (r.StatusCode == (int)StatusCode.Pending && "pending".Contains(searchKeyword)) || 
+                (r.StatusCode == (int)StatusCode.Pending && "pending".Contains(searchKeyword)) ||
                 (r.StatusCode == (int)StatusCode.Approved && "approved".Contains(searchKeyword)) ||
                 (r.StatusCode == (int)StatusCode.Rejected && "rejected".Contains(searchKeyword))
             ).ToListAsync();
-
         }
 
         public async Task<Request> AddRequestAsync(Request request)

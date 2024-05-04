@@ -1,38 +1,27 @@
-﻿using WizardFormBackend.DTOs;
+﻿using AutoMapper;
+using WizardFormBackend.Dto;
 using WizardFormBackend.Models;
 using WizardFormBackend.Repositories;
 
 namespace WizardFormBackend.Services
 {
-    public class StatusService(IStatusRepository statusRepository) : IStatusService
+    public class StatusService(IStatusRepository statusRepository, IMapper mapper) : IStatusService
     {
         private readonly IStatusRepository _statusRepository = statusRepository;
+        private readonly IMapper _mapper = mapper;
 
-        public async Task<IEnumerable<StatusDTO>> GetStatusesAsync()
+        public async Task<IEnumerable<StatusDto>> GetStatusesAsync()
         {
             IEnumerable<Status> statuses = await _statusRepository.GetAllStatusAsync();
-            List<StatusDTO> statusDTOs = new List<StatusDTO>();
-            foreach (Status status in statuses)
-            {
-                statusDTOs.Add(new StatusDTO
-                {
-                    StatusCode = status.StatusCode,
-                    Description = status.Description
-                });
-            }
+            List<StatusDto> statusDTOs = _mapper.Map<IEnumerable<Status>, List<StatusDto>>(statuses);
             return statusDTOs;
         }
 
-        public async Task<StatusDTO> AddStatusAsync(StatusDTO statusDTO)
+        public async Task<StatusDto> AddStatusAsync(StatusDto statusDto)
         {
-            Status status = new()
-            {
-                StatusCode = statusDTO.StatusCode,
-                Description = statusDTO.Description,
-            };
-
+            Status status = _mapper.Map<StatusDto, Status>(statusDto);
             Status newStatus = await _statusRepository.AddStatusAsync(status);
-            return new StatusDTO { StatusCode = newStatus.StatusCode, Description = newStatus.Description };
+            return _mapper.Map<Status, StatusDto>(newStatus);
         }
 
         public async Task DeleteStatusAsync(int statusCode)

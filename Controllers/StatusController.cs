@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using WizardFormBackend.Services;
-using WizardFormBackend.DTOs;
+using WizardFormBackend.Dto;
 using Microsoft.AspNetCore.Authorization;
 
 namespace WizardFormBackend.Controllers
@@ -19,15 +19,15 @@ namespace WizardFormBackend.Controllers
         [HttpGet]
         public async Task<IActionResult> GetAllStatus()
         {
-            IEnumerable<StatusDTO> statusDTOs = await _statusService.GetStatusesAsync();
+            IEnumerable<StatusDto> statusDTOs = await _statusService.GetStatusesAsync();
             return Ok(statusDTOs);
         }
 
         [HttpPost]
         [Authorize(Roles = "admin")]
-        public async Task<IActionResult> AddStatus(StatusDTO statusDTO)
+        public async Task<IActionResult> AddStatus(StatusDto statusDto)
         {
-            StatusDTO response = await _statusService.AddStatusAsync(statusDTO);
+            StatusDto response = await _statusService.AddStatusAsync(statusDto);
             return Created("/Status", response);
         }
 

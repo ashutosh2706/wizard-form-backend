@@ -1,54 +1,43 @@
-﻿using WizardFormBackend.DTOs;
+﻿using AutoMapper;
+using System.Linq.Dynamic.Core;
+using System.Reflection;
+using WizardFormBackend.Dto;
 using WizardFormBackend.Models;
 using WizardFormBackend.Repositories;
 
 namespace WizardFormBackend.Services
 {
-    public class RequestService(IRequestRepository requestRepository, IFileService fileService) : IRequestService
+    public class RequestService(IRequestRepository requestRepository, IFileService fileService, IMapper mapper) : IRequestService
     {
         private readonly IRequestRepository _requestRepository = requestRepository;
         private readonly IFileService _fileService = fileService;
+        private readonly IMapper _mapper = mapper;
 
-        public async Task<PaginatedResponseDTO<RequestDTO>> GetAllRequestAsync(string searchTerm, int pageNumber, int pageSize)
+        public async Task<PaginatedResponseDto<RequestDto>> GetAllRequestAsync(string searchTerm, int pageNumber, int pageSize, string sortField, string sortDirection)
         {
             IEnumerable<Request> requests = await _requestRepository.GetAllRequestAsync(searchTerm);
 
-            int totalPage = (int)Math.Ceiling((decimal)requests.Count() / pageSize);
-            IEnumerable<Request> paginatedRequests = requests.Skip((pageNumber - 1) * pageSize).Take(pageSize).ToList();
+            PropertyInfo[] properties = typeof(Request).GetProperties();
 
-            List<RequestDTO> result = [];
-            foreach (Request request in paginatedRequests)
-            {
-                result.Add(new RequestDTO
-                {
-                    RequestId = request.RequestId,
-                    UserId = request.UserId,
-                    Title = request.Title,
-                    GuardianName = request.GuardianName,
-                    RequestDate = request.RequestDate,
-                    PriorityCode = request.PriorityCode,
-                    StatusCode = request.StatusCode
-                });
-            }
-            return new PaginatedResponseDTO<RequestDTO> { PageNumber = pageNumber, TotalPage = totalPage, PageSize = pageSize, Items = result };
+            var matchedField = properties.FirstOrDefault(p => p.Name.Equals(sortField, StringComparison.CurrentCultureIgnoreCase));
+            string field = matchedField?.Name ?? "RequestId";      // fallback to default sort field
+            string sortExpression = sortDirection == "descending" ? $"{field} descending" : $"{field} ascending";   // fallback to default sort direction
+            
+            IEnumerable<Request> sortedRequests = requests.AsQueryable().OrderBy(sortExpression).AsEnumerable();
+            
+            int totalPage = (int)Math.Ceiling((decimal)sortedRequests.Count() / pageSize);
+            IEnumerable<Request> paginatedRequests = sortedRequests.Skip((pageNumber - 1) * pageSize).Take(pageSize).ToList();
+            
+            List<RequestDto> result = _mapper.Map<IEnumerable<Request>, List<RequestDto>>(paginatedRequests);
+            return new PaginatedResponseDto<RequestDto> { PageNumber = pageNumber, TotalPage = totalPage, PageSize = pageSize, Items = result };
         }
 
-        public async Task<RequestDTO> AddRequestAsync(RequestDTO requestDTO)
+        public async Task<RequestDto> AddRequestAsync(RequestDto requestDto)
         {
-            Request newRequest = new()
-            {
-                Title = requestDTO.Title,
-                UserId = requestDTO.UserId,
-                GuardianName = requestDTO.GuardianName,
-                RequestDate = requestDTO.RequestDate,
-                Phone = requestDTO.Phone,
-                PriorityCode = requestDTO.PriorityCode,
-                StatusCode = 1
-            };
+            Request newRequest = _mapper.Map<RequestDto, Request>(requestDto);
+            newRequest.StatusCode = 1;
+            IFormFile? file = requestDto.AttachedFile;
 
-            IFormFile? file = requestDTO.AttachedFile;
-
-            
             if(file != null)
             {
                 FileDetail? savedFileDetail = await _fileService.AddFileAsync(file);
@@ -59,9 +48,9 @@ namespace WizardFormBackend.Services
             }
             
             Request savedRequest = await _requestRepository.AddRequestAsync(newRequest);
-            requestDTO.RequestId = savedRequest.RequestId;
-            requestDTO.StatusCode = savedRequest.StatusCode;
-            return requestDTO;
+            requestDto.RequestId = savedRequest.RequestId;
+            requestDto.StatusCode = savedRequest.StatusCode;
+            return requestDto;
         }
 
         public async Task UpdateRequestStatusAsync(long requestId, int statusCode)
@@ -75,47 +64,36 @@ namespace WizardFormBackend.Services
         }
 
 
-        public async Task<PaginatedResponseDTO<RequestDTO>> GetAllRequestByUserIdAsync(long userId, string searchTerm, int pageNumber, int pageSize)
+        public async Task<PaginatedResponseDto<RequestDto>> GetAllRequestByUserIdAsync(long userId, string searchTerm, int pageNumber, int pageSize, string sortField, string sortDirection)
         {
-            IEnumerable<Request> requests = await _requestRepository.GetAllRequestByUserIdAsync(userId, searchTerm);
-            int totalPage = (int)Math.Ceiling((decimal)requests.Count() / pageSize);
-            IEnumerable<Request> paginatedRequests = requests.Skip((pageNumber - 1) * pageSize).Take(pageSize).ToList();
 
-            List<RequestDTO> result = [];
-            foreach (Request request in paginatedRequests)
-            {
-                result.Add(new RequestDTO
-                {
-                    RequestId = request.RequestId,
-                    UserId = request.UserId,
-                    Title = request.Title,
-                    RequestDate = request.RequestDate,
-                    PriorityCode = request.PriorityCode,
-                    StatusCode = request.StatusCode
-                });
-            }
+            IEnumerable<Request> requests = await _requestRepository.GetAllRequestByUserIdAsync(userId, searchTerm);        // get the filterd requests from repository
+
+            PropertyInfo[] properties = typeof(Request).GetProperties();
+
+            var matchedField = properties.FirstOrDefault(p => p.Name.Equals(sortField, StringComparison.CurrentCultureIgnoreCase));
+            string field = matchedField?.Name ?? "RequestId";      // fallback to default sort field
+            string sortExpression = sortDirection == "descending" ? $"{field} descending" : $"{field} ascending";   // fallback to default sort direction
+            IEnumerable<Request> sortedRequests = requests.AsQueryable().OrderBy(sortExpression).AsEnumerable();
+
+            int totalPage = (int)Math.Ceiling((decimal)sortedRequests.Count() / pageSize);
             
-            return new PaginatedResponseDTO<RequestDTO> { PageNumber = pageNumber, TotalPage = totalPage, PageSize = pageSize, Items = result };
+            IEnumerable<Request> paginatedRequests = sortedRequests.Skip((pageNumber - 1) * pageSize).Take(pageSize).ToList();
+            
+            List<RequestDto> result = _mapper.Map<IEnumerable<Request>, List<RequestDto>>(paginatedRequests);
+            return new PaginatedResponseDto<RequestDto> { PageNumber = pageNumber, TotalPage = totalPage, PageSize = pageSize, Items = result };
+
         }
 
-        public async Task<RequestDTO?> GetRequestByRequestIdAsync(long requestId)
+        public async Task<RequestDto?> GetRequestByRequestIdAsync(long requestId)
         {
             Request? request = await _requestRepository.GetRequestByRequestIdAsync(requestId);
             if(request != null)
             {
-                return new RequestDTO()
-                {
-                    RequestId = request.RequestId,
-                    UserId = request.UserId,
-                    Title = request.Title,
-                    RequestDate = request.RequestDate,
-                    PriorityCode = request.PriorityCode,
-                    StatusCode = request.StatusCode,
-                    GuardianName = request.GuardianName,
-                    Phone = request.Phone ?? ""
-                };
+                RequestDto requestDto = _mapper.Map<Request, RequestDto>(request);
+                requestDto.Phone = request.Phone ?? "";
+                return requestDto;
             }
-
             return null;
         }
 
