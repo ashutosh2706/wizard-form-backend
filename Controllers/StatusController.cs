@@ -1,8 +1,8 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using WizardFormBackend.Services;
-using WizardFormBackend.Dto;
 using Microsoft.AspNetCore.Authorization;
+using WizardFormBackend.Data.Dto;
 
 namespace WizardFormBackend.Controllers
 {

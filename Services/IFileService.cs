@@ -1,4 +1,4 @@
-﻿using WizardFormBackend.Models;
+﻿using WizardFormBackend.Data.Models;
 
 namespace WizardFormBackend.Services
 {

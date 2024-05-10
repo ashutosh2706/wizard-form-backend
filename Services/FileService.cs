@@ -1,6 +1,6 @@
 ﻿using System.Net.Http.Headers;
-using WizardFormBackend.Models;
-using WizardFormBackend.Repositories;
+using WizardFormBackend.Data.Models;
+using WizardFormBackend.Data.Repositories;
 using WizardFormBackend.Utils;
 
 namespace WizardFormBackend.Services

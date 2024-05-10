@@ -2,10 +2,10 @@
 using System.Linq.Dynamic.Core;
 using System.Reflection;
 using WizardFormBackend.Data;
-using WizardFormBackend.Models;
+using WizardFormBackend.Data.Models;
 using WizardFormBackend.Utils;
 
-namespace WizardFormBackend.Repositories
+namespace WizardFormBackend.Data.Repositories
 {
     public class RequestRepository : IRequestRepository
     {
@@ -18,17 +18,17 @@ namespace WizardFormBackend.Repositories
         public async Task<IEnumerable<Request>> GetAllRequestAsync(string searchKeyword)
         {
             searchKeyword = Util.Sanitize(searchKeyword.ToLower());
-            
+
             return await _dbContext.Requests.Where(r =>
                 r.RequestId.ToString() == searchKeyword ||
                 r.UserId.ToString() == searchKeyword ||
                 r.Title.ToLower().Contains(searchKeyword) ||
-                (r.PriorityCode == (int)PriorityCode.High && "high".Contains(searchKeyword)) ||
-                (r.PriorityCode == (int)PriorityCode.Normal && "normal".Contains(searchKeyword)) ||
-                (r.PriorityCode == (int)PriorityCode.Low && "low".Contains(searchKeyword)) ||
-                (r.StatusCode == (int)StatusCode.Pending && "pending".Contains(searchKeyword)) ||
-                (r.StatusCode == (int)StatusCode.Approved && "approved".Contains(searchKeyword)) ||
-                (r.StatusCode == (int)StatusCode.Rejected && "rejected".Contains(searchKeyword))
+                r.PriorityCode == (int)Constants.PriorityCode.High && "high".Contains(searchKeyword) ||
+                r.PriorityCode == (int)Constants.PriorityCode.Normal && "normal".Contains(searchKeyword) ||
+                r.PriorityCode == (int)Constants.PriorityCode.Low && "low".Contains(searchKeyword) ||
+                r.StatusCode == (int)Constants.StatusCode.Pending && "pending".Contains(searchKeyword) ||
+                r.StatusCode == (int)Constants.StatusCode.Approved && "approved".Contains(searchKeyword) ||
+                r.StatusCode == (int)Constants.StatusCode.Rejected && "rejected".Contains(searchKeyword)
             ).ToListAsync();
         }
 
@@ -45,9 +45,9 @@ namespace WizardFormBackend.Repositories
                 r.RequestId.ToString() == searchKeyword ||
                 r.RequestDate.ToString().ToLower().Contains(searchKeyword) ||
                 r.Title.ToLower().Contains(searchKeyword) ||
-                (r.StatusCode == (int)StatusCode.Pending && "pending".Contains(searchKeyword)) ||
-                (r.StatusCode == (int)StatusCode.Approved && "approved".Contains(searchKeyword)) ||
-                (r.StatusCode == (int)StatusCode.Rejected && "rejected".Contains(searchKeyword))
+                r.StatusCode == (int)Constants.StatusCode.Pending && "pending".Contains(searchKeyword) ||
+                r.StatusCode == (int)Constants.StatusCode.Approved && "approved".Contains(searchKeyword) ||
+                r.StatusCode == (int)Constants.StatusCode.Rejected && "rejected".Contains(searchKeyword)
             ).ToListAsync();
         }
 

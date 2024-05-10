@@ -1,13 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace WizardFormBackend.Models;
-
-public enum Roles
-{
-    User = 1,
-    Admin = 2,
-}
+namespace WizardFormBackend.Data.Models;
 
 public partial class User
 {

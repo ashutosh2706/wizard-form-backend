@@ -1,5 +1,5 @@
-﻿using WizardFormBackend.Dto;
-using WizardFormBackend.Models;
+﻿using WizardFormBackend.Data.Dto;
+using WizardFormBackend.Data.Models;
 
 namespace WizardFormBackend.Services
 {
@@ -8,7 +8,7 @@ namespace WizardFormBackend.Services
         Task<User> AddUserAsync(UserDto userDto);
         Task AllowUserAsync(long userId);
         Task DeleteUserAsync(long userId);
-        Task<PaginatedResponseDto<UserResponseDto>> GetUsersAsync(string searchTerm, int pageNumber, int pageSize);
+        Task<PagedResponseDto<UserResponseDto>> GetUsersAsync(string searchTerm, int pageNumber, int pageSize);
         Task UpdateUserAsync(UserDto userDto);
         Task<string?> AuthenticateUserAsync(LoginDto loginDto);
         Task ChangeRoleAsync(long userId, int roleId);

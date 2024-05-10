@@ -1,4 +1,4 @@
-﻿using WizardFormBackend.Dto;
+﻿using WizardFormBackend.Data.Dto;
 
 namespace WizardFormBackend.Services
 {
@@ -6,8 +6,8 @@ namespace WizardFormBackend.Services
     {
         Task<RequestDto> AddRequestAsync(RequestDto requestDto);
         Task DeleteRequestAsync(long requestId);
-        Task<PaginatedResponseDto<RequestDto>> GetAllRequestAsync(string searchTerm, int pageNumber, int pageSize, string sortField, string sortDirection);
-        Task<PaginatedResponseDto<RequestDto>> GetAllRequestByUserIdAsync(long userId, string searchTerm, int pageNumber, int pageSize, string sortField, string sortDirection);
+        Task<PagedResponseDto<RequestDto>> GetAllRequestAsync(string searchTerm, int pageNumber, int pageSize, string sortField, string sortDirection);
+        Task<PagedResponseDto<RequestDto>> GetAllRequestByUserIdAsync(long userId, string searchTerm, int pageNumber, int pageSize, string sortField, string sortDirection);
         Task UpdateRequestStatusAsync(long requestId, int statusCode);
         Task<RequestDto?> GetRequestByRequestIdAsync(long requestId);
     }

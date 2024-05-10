@@ -1,9 +1,9 @@
 ﻿using AutoMapper;
 using System.Linq.Dynamic.Core;
 using System.Reflection;
-using WizardFormBackend.Dto;
-using WizardFormBackend.Models;
-using WizardFormBackend.Repositories;
+using WizardFormBackend.Data.Dto;
+using WizardFormBackend.Data.Models;
+using WizardFormBackend.Data.Repositories;
 
 namespace WizardFormBackend.Services
 {
@@ -13,7 +13,7 @@ namespace WizardFormBackend.Services
         private readonly IFileService _fileService = fileService;
         private readonly IMapper _mapper = mapper;
 
-        public async Task<PaginatedResponseDto<RequestDto>> GetAllRequestAsync(string searchTerm, int pageNumber, int pageSize, string sortField, string sortDirection)
+        public async Task<PagedResponseDto<RequestDto>> GetAllRequestAsync(string searchTerm, int pageNumber, int pageSize, string sortField, string sortDirection)
         {
             IEnumerable<Request> requests = await _requestRepository.GetAllRequestAsync(searchTerm);
 
@@ -29,7 +29,7 @@ namespace WizardFormBackend.Services
             IEnumerable<Request> paginatedRequests = sortedRequests.Skip((pageNumber - 1) * pageSize).Take(pageSize).ToList();
             
             List<RequestDto> result = _mapper.Map<IEnumerable<Request>, List<RequestDto>>(paginatedRequests);
-            return new PaginatedResponseDto<RequestDto> { PageNumber = pageNumber, TotalPage = totalPage, PageSize = pageSize, Items = result };
+            return new PagedResponseDto<RequestDto> { PageNumber = pageNumber, TotalPage = totalPage, PageSize = pageSize, Items = result };
         }
 
         public async Task<RequestDto> AddRequestAsync(RequestDto requestDto)
@@ -64,7 +64,7 @@ namespace WizardFormBackend.Services
         }
 
 
-        public async Task<PaginatedResponseDto<RequestDto>> GetAllRequestByUserIdAsync(long userId, string searchTerm, int pageNumber, int pageSize, string sortField, string sortDirection)
+        public async Task<PagedResponseDto<RequestDto>> GetAllRequestByUserIdAsync(long userId, string searchTerm, int pageNumber, int pageSize, string sortField, string sortDirection)
         {
 
             IEnumerable<Request> requests = await _requestRepository.GetAllRequestByUserIdAsync(userId, searchTerm);        // get the filterd requests from repository
@@ -81,7 +81,7 @@ namespace WizardFormBackend.Services
             IEnumerable<Request> paginatedRequests = sortedRequests.Skip((pageNumber - 1) * pageSize).Take(pageSize).ToList();
             
             List<RequestDto> result = _mapper.Map<IEnumerable<Request>, List<RequestDto>>(paginatedRequests);
-            return new PaginatedResponseDto<RequestDto> { PageNumber = pageNumber, TotalPage = totalPage, PageSize = pageSize, Items = result };
+            return new PagedResponseDto<RequestDto> { PageNumber = pageNumber, TotalPage = totalPage, PageSize = pageSize, Items = result };
 
         }
 

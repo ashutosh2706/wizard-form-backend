@@ -1,7 +1,7 @@
 ﻿using AutoMapper;
-using WizardFormBackend.Dto;
-using WizardFormBackend.Models;
-using WizardFormBackend.Repositories;
+using WizardFormBackend.Data.Dto;
+using WizardFormBackend.Data.Models;
+using WizardFormBackend.Data.Repositories;
 using WizardFormBackend.Utils;
 
 namespace WizardFormBackend.Services
@@ -22,7 +22,7 @@ namespace WizardFormBackend.Services
             return await _userRepository.AddUserAsync(user);
         }
         
-        public async Task<PaginatedResponseDto<UserResponseDto>> GetUsersAsync(string searchTerm, int pageNumber, int pageSize)
+        public async Task<PagedResponseDto<UserResponseDto>> GetUsersAsync(string searchTerm, int pageNumber, int pageSize)
         {
             IEnumerable<User> users = await _userRepository.GetAllUserAsync(searchTerm);
 
@@ -43,7 +43,7 @@ namespace WizardFormBackend.Services
                 };
                 result.Add(userDTO);
             }
-            return new PaginatedResponseDto<UserResponseDto> { PageNumber = pageNumber, TotalPage = totalPage, PageSize = pageSize, Items = result };
+            return new PagedResponseDto<UserResponseDto> { PageNumber = pageNumber, TotalPage = totalPage, PageSize = pageSize, Items = result };
 
         }
 

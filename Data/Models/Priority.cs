@@ -1,11 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace WizardFormBackend.Models;
+namespace WizardFormBackend.Data.Models;
 
-public partial class Status
+public partial class Priority
 {
-    public int StatusCode { get; set; }
+    public int PriorityCode { get; set; }
 
     public string Description { get; set; } = null!;
 

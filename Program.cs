@@ -2,14 +2,15 @@ using AutoMapper;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.IdentityModel.Tokens;
+using Microsoft.OpenApi.Models;
 using System.Net;
 using System.Text;
 using WizardFormBackend.Data;
-using WizardFormBackend.Dto;
+using WizardFormBackend.Data.Dto;
+using WizardFormBackend.Data.Models;
+using WizardFormBackend.Data.Repositories;
 using WizardFormBackend.Mappings;
 using WizardFormBackend.Middleware;
-using WizardFormBackend.Models;
-using WizardFormBackend.Repositories;
 using WizardFormBackend.Services;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -33,7 +34,39 @@ builder.Services.AddScoped<IFileService, FileService>();
 
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
+builder.Services.AddSwaggerGen(config =>
+{
+    config.SwaggerDoc("v1", new OpenApiInfo
+    {
+        Title = "Wizard_Form_Api_v1",
+        Version = "v1"
+    });
+
+    config.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+    {
+        Name = "Authorization",
+        Type = SecuritySchemeType.ApiKey,
+        Scheme = "Bearer",
+        BearerFormat = "JWT",
+        In = ParameterLocation.Header,
+        Description = "Enter JWT token to authorize. Format: 'Bearer YOUR_TOKEN'"
+    });
+
+    config.AddSecurityRequirement(new OpenApiSecurityRequirement
+    {
+        {
+            new OpenApiSecurityScheme
+            {
+                Reference = new OpenApiReference
+                {
+                    Type = ReferenceType.SecurityScheme,
+                    Id = "Bearer",
+                }
+            },
+            new String[] {}
+        }
+    });
+});
 
 
 IMapper mapper = new MapperConfiguration(cfg =>
@@ -55,7 +88,7 @@ builder.Services.AddSingleton(mapper);
 
 builder.Services.AddCors(options =>
 {
-    options.AddPolicy("ClientPermission", policy =>
+    options.AddPolicy("MyPolicy", policy =>
     {
         policy.AllowAnyHeader()
         .AllowAnyMethod()
@@ -99,7 +132,7 @@ app.UseExceptionHandler(options =>
     });
 });
 
-app.UseCors("ClientPermission");
+app.UseCors("MyPolicy");
 
 app.UseHttpsRedirection();
 

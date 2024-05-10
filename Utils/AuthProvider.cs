@@ -2,7 +2,7 @@
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
-using WizardFormBackend.Models;
+using WizardFormBackend.Data.Models;
 
 namespace WizardFormBackend.Utils
 {

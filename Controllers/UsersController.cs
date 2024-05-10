@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using WizardFormBackend.Dto;
-using WizardFormBackend.Models;
+using WizardFormBackend.Data.Dto;
+using WizardFormBackend.Data.Models;
 using WizardFormBackend.Services;
 using WizardFormBackend.Utils;
 
@@ -21,7 +21,7 @@ namespace WizardFormBackend.Controllers
         [Authorize(Roles = "admin")]
         public async Task<IActionResult> GetUsers([FromQuery]QueryParams queryParams)
         {
-            PaginatedResponseDto<UserResponseDto> response = await _userService.GetUsersAsync(queryParams.SearchTerm, queryParams.PageNumber, queryParams.PageSize);
+            PagedResponseDto<UserResponseDto> response = await _userService.GetUsersAsync(queryParams.SearchTerm, queryParams.PageNumber, queryParams.PageSize);
             return Ok(response);
         }
 

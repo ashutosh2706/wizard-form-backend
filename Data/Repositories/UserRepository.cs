@@ -1,9 +1,9 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using WizardFormBackend.Data;
-using WizardFormBackend.Models;
+using WizardFormBackend.Data.Models;
 using WizardFormBackend.Utils;
 
-namespace WizardFormBackend.Repositories
+namespace WizardFormBackend.Data.Repositories
 {
     public class UserRepository : IUserRepository
     {
@@ -22,8 +22,8 @@ namespace WizardFormBackend.Repositories
                 r.FirstName.ToLower().Contains(searchKeyword) ||
                 r.LastName.ToLower().Contains(searchKeyword) ||
                 r.Email.ToLower().Contains(searchKeyword) ||
-                (r.RoleId == (int)Roles.User && "user".Contains(searchKeyword)) ||
-                (r.RoleId == (int)Roles.Admin && "admin".Contains(searchKeyword))
+                r.RoleId == (int)Constants.Roles.User && "user".Contains(searchKeyword) ||
+                r.RoleId == (int)Constants.Roles.Admin && "admin".Contains(searchKeyword)
             ).ToListAsync();
         }
 

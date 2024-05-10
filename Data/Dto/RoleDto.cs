@@ -1,4 +1,4 @@
-﻿namespace WizardFormBackend.Dto
+﻿namespace WizardFormBackend.Data.Dto
 {
     public class RoleDto
     {

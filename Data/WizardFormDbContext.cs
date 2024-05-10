@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore;
-using WizardFormBackend.Models;
+using WizardFormBackend.Data.Models;
 
 namespace WizardFormBackend.Data;
 
@@ -30,11 +30,14 @@ public partial class WizardFormDbContext : DbContext
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
-        IConfigurationRoot configuration = new ConfigurationBuilder()
+        if(!optionsBuilder.IsConfigured)
+        {
+            IConfigurationRoot configuration = new ConfigurationBuilder()
             .SetBasePath(AppDomain.CurrentDomain.BaseDirectory)
             .AddJsonFile("appsettings.json")
             .Build();
-        optionsBuilder.UseSqlServer(configuration.GetConnectionString("SqlServer"));
+            optionsBuilder.UseSqlServer(configuration.GetConnectionString("SqlServer"));
+        }
     }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)

@@ -1,8 +1,8 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using WizardFormBackend.Data;
-using WizardFormBackend.Models;
+using WizardFormBackend.Data.Models;
 
-namespace WizardFormBackend.Repositories
+namespace WizardFormBackend.Data.Repositories
 {
     public class RoleRepository : IRoleRepository
     {

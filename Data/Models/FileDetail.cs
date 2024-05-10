@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace WizardFormBackend.Models;
+namespace WizardFormBackend.Data.Models;
 
 public partial class FileDetail
 {

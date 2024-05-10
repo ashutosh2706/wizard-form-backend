@@ -1,4 +1,4 @@
-﻿using WizardFormBackend.Dto;
+﻿using WizardFormBackend.Data.Dto;
 
 namespace WizardFormBackend.Services
 {

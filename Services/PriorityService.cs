@@ -1,7 +1,7 @@
-﻿using WizardFormBackend.Repositories;
-using WizardFormBackend.Models;
-using WizardFormBackend.Dto;
-using AutoMapper;
+﻿using AutoMapper;
+using WizardFormBackend.Data.Dto;
+using WizardFormBackend.Data.Models;
+using WizardFormBackend.Data.Repositories;
 
 namespace WizardFormBackend.Services
 {

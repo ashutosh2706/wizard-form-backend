@@ -1,21 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace WizardFormBackend.Models;
-
-public enum StatusCode
-{
-    Pending = 1,
-    Approved = 2,
-    Rejected = 3,
-}
-
-public enum PriorityCode
-{
-    High = 1,
-    Normal = 2,
-    Low = 3,
-}
+namespace WizardFormBackend.Data.Models;
 
 public partial class Request
 {

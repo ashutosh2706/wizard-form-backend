@@ -1,6 +1,6 @@
-﻿using WizardFormBackend.Models;
+﻿using WizardFormBackend.Data.Models;
 
-namespace WizardFormBackend.Repositories
+namespace WizardFormBackend.Data.Repositories
 {
     public interface IStatusRepository
     {

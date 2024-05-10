@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using WizardFormBackend.Dto;
+using WizardFormBackend.Data.Dto;
 using WizardFormBackend.Services;
 using WizardFormBackend.Utils;
 
@@ -20,14 +20,14 @@ namespace WizardFormBackend.Controllers
         [Authorize(Roles = "admin")]
         public async Task<IActionResult> GetAllRequest([FromQuery]QueryParams queryParams)
         {
-            PaginatedResponseDto<RequestDto> response = await _requestService.GetAllRequestAsync(queryParams.SearchTerm, queryParams.PageNumber, queryParams.PageSize, queryParams.SortField, queryParams.SortDirection);
+            PagedResponseDto<RequestDto> response = await _requestService.GetAllRequestAsync(queryParams.SearchTerm, queryParams.PageNumber, queryParams.PageSize, queryParams.SortField, queryParams.SortDirection);
             return Ok(response);
         }
 
         [HttpGet("user/{UserId}")]
         public async Task<IActionResult> GetAllRequestByUserId(long UserId, [FromQuery]QueryParams queryParams)
         {
-            PaginatedResponseDto<RequestDto> response = await _requestService.GetAllRequestByUserIdAsync(UserId, queryParams.SearchTerm, queryParams.PageNumber, queryParams.PageSize, queryParams.SortField, queryParams.SortDirection);
+            PagedResponseDto<RequestDto> response = await _requestService.GetAllRequestByUserIdAsync(UserId, queryParams.SearchTerm, queryParams.PageNumber, queryParams.PageSize, queryParams.SortField, queryParams.SortDirection);
             return Ok(response);
         }
 
