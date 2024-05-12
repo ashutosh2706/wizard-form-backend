@@ -19,7 +19,7 @@ namespace WizardFormBackend.Controllers
         public async Task<IActionResult> GetPriorities()
         {
             IEnumerable<PriorityDto> priorityDTOs = await _priorityService.GetPrioritiesAsync();
-            return Ok(priorityDTOs);
+            return priorityDTOs.Count() > 0 ? Ok(priorityDTOs) : NoContent();
         }
 
         [HttpPost]

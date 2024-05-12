@@ -61,24 +61,30 @@ namespace WizardFormBackend.Services
             }
         }
 
-        public async Task AllowUserAsync(long userId)
+        public async Task<bool> AllowUserAsync(long userId)
         {
             User? user = await _userRepository.GetUserByUserIdAsync(userId);
             if (user != null)
             {
                 user.Active = !user.Active;
                 await _userRepository.UpdateUserAsync(user);
+                return true;
             }
+
+            return false;
         }
 
 
-        public async Task DeleteUserAsync(long userId)
+        public async Task<bool> DeleteUserAsync(long userId)
         {
             User? user = await _userRepository.GetUserByUserIdAsync(userId);
             if (user != null)
             {
                 await _userRepository.DeleteUserAsync(user);
+                return true;
             }
+
+            return false;
         }
 
         public async Task<string?> AuthenticateUserAsync(LoginDto loginDto)

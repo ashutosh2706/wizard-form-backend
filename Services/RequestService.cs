@@ -53,14 +53,17 @@ namespace WizardFormBackend.Services
             return requestDto;
         }
 
-        public async Task UpdateRequestStatusAsync(long requestId, int statusCode)
+        public async Task<bool> UpdateRequestStatusAsync(long requestId, int statusCode)
         {
             Request? existingRequest = await _requestRepository.GetRequestByRequestIdAsync(requestId);
             if (existingRequest != null)
             {
                 existingRequest.StatusCode = statusCode;
                 await _requestRepository.UpdateRequestAsync(existingRequest);
+                return true;
             }
+
+            return false;
         }
 
 
@@ -97,13 +100,16 @@ namespace WizardFormBackend.Services
             return null;
         }
 
-        public async Task DeleteRequestAsync(long requestId)
+        public async Task<bool> DeleteRequestAsync(long requestId)
         {
             Request? existingRequest = await _requestRepository.GetRequestByRequestIdAsync(requestId);
             if (existingRequest != null)
             {
                 await _requestRepository.DeleteRequestAsync(existingRequest);
+                return true;
             }
+
+            return false;
         }
     }
 }

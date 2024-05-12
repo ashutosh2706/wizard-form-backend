@@ -46,8 +46,8 @@ namespace WizardFormBackend.Controllers
         [Authorize(Roles = "admin")]
         public async Task<IActionResult> AllowUser(long UserId)
         {
-            await _userService.AllowUserAsync(UserId);
-            return Ok();
+            bool actionPerformed = await _userService.AllowUserAsync(UserId);
+            return actionPerformed ? Ok() : NotFound();
         }
 
 
@@ -64,8 +64,8 @@ namespace WizardFormBackend.Controllers
         [Authorize(Roles = "admin")]
         public async Task<IActionResult> DeleteUser(long UserId)
         {
-            await _userService.DeleteUserAsync(UserId);
-            return NoContent();
+            bool actionPerformed = await _userService.DeleteUserAsync(UserId);
+            return actionPerformed ? NoContent() : NotFound();
         }
 
     }

@@ -49,16 +49,16 @@ namespace WizardFormBackend.Controllers
         [Authorize(Roles = "admin")]
         public async Task<IActionResult> UpdateRequestStatus(long RequestId, int StatusCode)
         {
-            await _requestService.UpdateRequestStatusAsync(RequestId, StatusCode);
-            return Ok();
+            bool actionPerformed = await _requestService.UpdateRequestStatusAsync(RequestId, StatusCode);
+            return actionPerformed ? Ok() : NotFound();
         }
 
         [HttpDelete("delete/{RequestId}")]
         [Authorize(Roles = "admin")]
         public async Task<IActionResult> DeleteRequest(long RequestId)
         {
-            await _requestService.DeleteRequestAsync(RequestId);
-            return NoContent();
+            bool actionPerformed = await _requestService.DeleteRequestAsync(RequestId);
+            return actionPerformed ? NoContent() : NotFound();
         }
     }
 }

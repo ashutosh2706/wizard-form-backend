@@ -6,8 +6,8 @@ namespace WizardFormBackend.Services
     public interface IUserService
     {
         Task<User> AddUserAsync(UserDto userDto);
-        Task AllowUserAsync(long userId);
-        Task DeleteUserAsync(long userId);
+        Task<bool> AllowUserAsync(long userId);
+        Task<bool> DeleteUserAsync(long userId);
         Task<PagedResponseDto<UserResponseDto>> GetUsersAsync(string searchTerm, int pageNumber, int pageSize);
         Task UpdateUserAsync(UserDto userDto);
         Task<string?> AuthenticateUserAsync(LoginDto loginDto);
