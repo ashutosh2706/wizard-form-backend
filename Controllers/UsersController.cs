@@ -18,11 +18,18 @@ namespace WizardFormBackend.Controllers
         }
 
         [HttpGet]
-        [Authorize(Roles = "admin")]
+        [Authorize(Roles = Roles.Admin)]
         public async Task<IActionResult> GetUsers([FromQuery]QueryParams queryParams)
         {
-            PagedResponseDto<UserResponseDto> response = await _userService.GetUsersAsync(queryParams.SearchTerm, queryParams.PageNumber, queryParams.PageSize);
-            return Ok(response);
+            try
+            {
+                PagedResponseDto<UserResponseDto> response = await _userService.GetUsersAsync(queryParams.SearchTerm, queryParams.PageNumber, queryParams.PageSize);
+                return Ok(response);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
 
 
@@ -43,7 +50,7 @@ namespace WizardFormBackend.Controllers
 
 
         [HttpPut("allow/{UserId}")]
-        [Authorize(Roles = "admin")]
+        [Authorize(Roles = Roles.Admin)]
         public async Task<IActionResult> AllowUser(long UserId)
         {
             bool actionPerformed = await _userService.AllowUserAsync(UserId);
@@ -52,7 +59,7 @@ namespace WizardFormBackend.Controllers
 
 
         [HttpPut("change-role")]
-        [Authorize(Roles = "admin")]
+        [Authorize(Roles = Roles.Admin)]
         public async Task<IActionResult> ChangeRole(ChangeRoleDto changeRoleDto)
         {
             await _userService.ChangeRoleAsync(changeRoleDto.UserId, changeRoleDto.RoleId);
@@ -61,7 +68,7 @@ namespace WizardFormBackend.Controllers
 
 
         [HttpDelete("delete/{UserId}")]
-        [Authorize(Roles = "admin")]
+        [Authorize(Roles = Roles.Admin)]
         public async Task<IActionResult> DeleteUser(long UserId)
         {
             bool actionPerformed = await _userService.DeleteUserAsync(UserId);

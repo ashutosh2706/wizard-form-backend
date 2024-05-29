@@ -1,6 +1,6 @@
 ﻿namespace WizardFormBackend
 {
-    public class Constants
+    public sealed class Constants
     {
         public enum StatusCode
         {

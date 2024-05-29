@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Microsoft.IdentityModel.Tokens;
 using System.Linq.Dynamic.Core;
 using System.Reflection;
 using WizardFormBackend.Data.Dto;
@@ -19,15 +20,28 @@ namespace WizardFormBackend.Services
 
             PropertyInfo[] properties = typeof(Request).GetProperties();
 
-            var matchedField = properties.FirstOrDefault(p => p.Name.Equals(sortField, StringComparison.CurrentCultureIgnoreCase));
-            string field = matchedField?.Name ?? "RequestId";      // fallback to default sort field
-            string sortExpression = sortDirection == "descending" ? $"{field} descending" : $"{field} ascending";   // fallback to default sort direction
-            
+            string field;
+            if(!sortField.IsNullOrEmpty())
+            {
+                var matchedField = properties.FirstOrDefault(p => p.Name.Equals(sortField, StringComparison.CurrentCultureIgnoreCase));
+                if(matchedField == null)
+                {
+                    throw new Exception($"Invalid sort field: {sortField}");
+                }
+                else
+                {
+                    field = matchedField.Name;
+                }
+            }
+            else
+            {
+                field = "RequestId";
+            }
+
+            string sortExpression = sortDirection == "descending" ? $"{field} descending" : $"{field} ascending";
             IEnumerable<Request> sortedRequests = requests.AsQueryable().OrderBy(sortExpression).AsEnumerable();
-            
             int totalPage = (int)Math.Ceiling((decimal)sortedRequests.Count() / pageSize);
             IEnumerable<Request> paginatedRequests = sortedRequests.Skip((pageNumber - 1) * pageSize).Take(pageSize).ToList();
-            
             List<RequestDto> result = _mapper.Map<IEnumerable<Request>, List<RequestDto>>(paginatedRequests);
             return new PagedResponseDto<RequestDto> { PageNumber = pageNumber, TotalPage = totalPage, PageSize = pageSize, Items = result };
         }
@@ -71,21 +85,32 @@ namespace WizardFormBackend.Services
         {
 
             IEnumerable<Request> requests = await _requestRepository.GetAllRequestByUserIdAsync(userId, searchTerm);        // get the filterd requests from repository
-
             PropertyInfo[] properties = typeof(Request).GetProperties();
 
-            var matchedField = properties.FirstOrDefault(p => p.Name.Equals(sortField, StringComparison.CurrentCultureIgnoreCase));
-            string field = matchedField?.Name ?? "RequestId";      // fallback to default sort field
+            string field;
+            if (!sortField.IsNullOrEmpty())
+            {
+                var matchedField = properties.FirstOrDefault(p => p.Name.Equals(sortField, StringComparison.CurrentCultureIgnoreCase));
+                if (matchedField == null)
+                {
+                    throw new Exception($"Invalid sort field: {sortField}");
+                }
+                else
+                {
+                    field = matchedField.Name;
+                }
+            }
+            else
+            {
+                field = "RequestId";
+            }
+
             string sortExpression = sortDirection == "descending" ? $"{field} descending" : $"{field} ascending";   // fallback to default sort direction
             IEnumerable<Request> sortedRequests = requests.AsQueryable().OrderBy(sortExpression).AsEnumerable();
-
             int totalPage = (int)Math.Ceiling((decimal)sortedRequests.Count() / pageSize);
-            
             IEnumerable<Request> paginatedRequests = sortedRequests.Skip((pageNumber - 1) * pageSize).Take(pageSize).ToList();
-            
             List<RequestDto> result = _mapper.Map<IEnumerable<Request>, List<RequestDto>>(paginatedRequests);
             return new PagedResponseDto<RequestDto> { PageNumber = pageNumber, TotalPage = totalPage, PageSize = pageSize, Items = result };
-
         }
 
         public async Task<RequestDto?> GetRequestByRequestIdAsync(long requestId)

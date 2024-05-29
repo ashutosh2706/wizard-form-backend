@@ -17,18 +17,32 @@ namespace WizardFormBackend.Controllers
         }
 
         [HttpGet]
-        [Authorize(Roles = "admin")]
+        [Authorize(Roles = Roles.Admin)]
         public async Task<IActionResult> GetAllRequest([FromQuery]QueryParams queryParams)
         {
-            PagedResponseDto<RequestDto> response = await _requestService.GetAllRequestAsync(queryParams.SearchTerm, queryParams.PageNumber, queryParams.PageSize, queryParams.SortField, queryParams.SortDirection);
-            return Ok(response);
+            try
+            {
+                PagedResponseDto<RequestDto> response = await _requestService.GetAllRequestAsync(queryParams.SearchTerm, queryParams.PageNumber, queryParams.PageSize, queryParams.SortField, queryParams.SortDirection);
+                return Ok(response);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
 
         [HttpGet("user/{UserId}")]
         public async Task<IActionResult> GetAllRequestByUserId(long UserId, [FromQuery]QueryParams queryParams)
         {
-            PagedResponseDto<RequestDto> response = await _requestService.GetAllRequestByUserIdAsync(UserId, queryParams.SearchTerm, queryParams.PageNumber, queryParams.PageSize, queryParams.SortField, queryParams.SortDirection);
-            return Ok(response);
+            try
+            {
+                PagedResponseDto<RequestDto> response = await _requestService.GetAllRequestByUserIdAsync(UserId, queryParams.SearchTerm, queryParams.PageNumber, queryParams.PageSize, queryParams.SortField, queryParams.SortDirection);
+                return Ok(response);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
 
         [HttpGet("{RequestId}")]
@@ -43,10 +57,11 @@ namespace WizardFormBackend.Controllers
         {
             RequestDto? response = await _requestService.AddRequestAsync(requestDto);
             return Created("/Requests", response);
+
         }
 
         [HttpPut("update/{RequestId}/{StatusCode}")]
-        [Authorize(Roles = "admin")]
+        [Authorize(Roles = Roles.Admin)]
         public async Task<IActionResult> UpdateRequestStatus(long RequestId, int StatusCode)
         {
             bool actionPerformed = await _requestService.UpdateRequestStatusAsync(RequestId, StatusCode);
@@ -54,7 +69,7 @@ namespace WizardFormBackend.Controllers
         }
 
         [HttpDelete("delete/{RequestId}")]
-        [Authorize(Roles = "admin")]
+        [Authorize(Roles = Roles.Admin)]
         public async Task<IActionResult> DeleteRequest(long RequestId)
         {
             bool actionPerformed = await _requestService.DeleteRequestAsync(RequestId);

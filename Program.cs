@@ -5,7 +5,7 @@ using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using System.Net;
 using System.Text;
-using WizardFormBackend.Data;
+using WizardFormBackend.Data.Context;
 using WizardFormBackend.Data.Dto;
 using WizardFormBackend.Data.Models;
 using WizardFormBackend.Data.Repositories;
@@ -49,7 +49,7 @@ builder.Services.AddSwaggerGen(config =>
         Scheme = "Bearer",
         BearerFormat = "JWT",
         In = ParameterLocation.Header,
-        Description = "Enter jwt token in format: 'Bearer YOUR_TOKEN' to authorize."
+        Description = "Enter jwt token in the format: 'Bearer YOUR_TOKEN' to authorize endpoints."
     });
 
     config.AddSecurityRequirement(new OpenApiSecurityRequirement
@@ -61,6 +61,29 @@ builder.Services.AddSwaggerGen(config =>
                 {
                     Type = ReferenceType.SecurityScheme,
                     Id = "Bearer",
+                }
+            },
+            new String[] {}
+        }
+    });
+
+    config.AddSecurityDefinition("ApiKey", new OpenApiSecurityScheme
+    {
+        Name = "api-key",
+        Type = SecuritySchemeType.ApiKey,
+        In = ParameterLocation.Header,
+        Description = "Enter your api key in the provided field to authorize endpoints."
+    });
+
+    config.AddSecurityRequirement(new OpenApiSecurityRequirement
+    {
+        {
+            new OpenApiSecurityScheme
+            {
+                Reference = new OpenApiReference
+                {
+                    Type = ReferenceType.SecurityScheme,
+                    Id = "ApiKey",
                 }
             },
             new String[] {}

@@ -23,7 +23,7 @@ namespace WizardFormBackend.Controllers
         }
 
         [HttpPost]
-        [Authorize(Roles = "admin")]
+        [Authorize(Roles = Roles.Admin)]
         public async Task<IActionResult> AddPriority(PriorityDto priorityDto)
         {
             PriorityDto responseDTO = await _priorityService.AddPriorityAsync(priorityDto);
@@ -31,7 +31,7 @@ namespace WizardFormBackend.Controllers
         }
 
         [HttpDelete("{PriorityCode}")]
-        [Authorize(Roles = "admin")]
+        [Authorize(Roles = Roles.Admin)]
         public async Task<IActionResult> DeletePriority(int PriorityCode)
         {
             await _priorityService.DeletePriorityAsync(PriorityCode);

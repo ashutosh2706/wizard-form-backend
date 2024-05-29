@@ -7,7 +7,7 @@ namespace WizardFormBackend.Utils
     {
         public string SearchTerm { get; set; } = string.Empty;
         public string SortField { get; set; } = string.Empty;
-        [ValidateSortDirection(ErrorMessage = "Sort direction must be either 'ascending' or 'descending'")]
+        [ValidateSortDirection(ErrorMessage = "Sort direction must be 'ascending' or 'descending'")]
         public string SortDirection { get; set; } = "ascending";
         [Range(1, int.MaxValue, ErrorMessage = "Page number should be >= 1")]
         public int PageNumber { get; set; } = 1;

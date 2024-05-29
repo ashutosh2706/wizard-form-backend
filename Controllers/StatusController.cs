@@ -24,7 +24,7 @@ namespace WizardFormBackend.Controllers
         }
 
         [HttpPost]
-        [Authorize(Roles = "admin")]
+        [Authorize(Roles = Roles.Admin)]
         public async Task<IActionResult> AddStatus(StatusDto statusDto)
         {
             StatusDto response = await _statusService.AddStatusAsync(statusDto);
@@ -32,7 +32,7 @@ namespace WizardFormBackend.Controllers
         }
 
         [HttpDelete("{StatusCode}")]
-        [Authorize(Roles = "admin")]
+        [Authorize(Roles = Roles.Admin)]
         public async Task<IActionResult> DeleteStatusAsync(int StatusCode)
         {
             await _statusService.DeleteStatusAsync(StatusCode);

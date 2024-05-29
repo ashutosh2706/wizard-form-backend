@@ -1,5 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using WizardFormBackend.Data;
+using WizardFormBackend.Data.Context;
 using WizardFormBackend.Data.Models;
 
 namespace WizardFormBackend.Data.Repositories

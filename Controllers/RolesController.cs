@@ -23,7 +23,7 @@ namespace WizardFormBackend.Controllers
         }
 
         [HttpPost]
-        [Authorize(Roles = "admin")]
+        [Authorize(Roles = Roles.Admin)]
         public async Task<IActionResult> AddRole(RoleDto roleDto)
         {
             RoleDto role = await _roleService.AddRoleAsync(roleDto);
@@ -31,7 +31,7 @@ namespace WizardFormBackend.Controllers
         }
 
         [HttpDelete("{RoleId}")]
-        [Authorize(Roles = "admin")]
+        [Authorize(Roles = Roles.Admin)]
         public async Task<IActionResult> DeleteRole(int RoleId)
         {
             await _roleService.DeleteRoleAsync(RoleId);

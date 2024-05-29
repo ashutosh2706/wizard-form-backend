@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore;
 using WizardFormBackend.Data.Models;
 
-namespace WizardFormBackend.Data;
+namespace WizardFormBackend.Data.Context;
 
 public partial class WizardFormDbContext : DbContext
 {
@@ -30,7 +30,7 @@ public partial class WizardFormDbContext : DbContext
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
-        if(!optionsBuilder.IsConfigured)
+        if (!optionsBuilder.IsConfigured)
         {
             IConfigurationRoot configuration = new ConfigurationBuilder()
             .SetBasePath(AppDomain.CurrentDomain.BaseDirectory)
